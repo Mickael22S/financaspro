@@ -461,7 +461,7 @@
 
   <!-- METAS -->
   <div class="page" id="page-metas">
-    <div class="section"><div class="wrap narrow">
+    <div class="section"><div class="wrap">
       <div class="meta-bar"><button class="meta-add" onclick="abrirMetaForm()" aria-label="Adicionar nova meta" title="Nova meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
       <div class="meta-overlay" id="meta-overlay" onclick="if(event.target===this)fecharMetaForm()">
       <div class="card meta-modal" role="dialog" aria-modal="true" aria-label="Nova meta">
@@ -587,10 +587,6 @@
           <div class="card">
             <div class="card-header">
               <div class="card-title" id="cal-titulo">Calendário</div>
-              <div style="display:flex;gap:6px">
-                <button class="btn-ghost" onclick="calMudaMes(-1)" aria-label="Mês anterior">&#8592;</button>
-                <button class="btn-ghost" onclick="calMudaMes(1)" aria-label="Próximo mês">&#8594;</button>
-              </div>
             </div>
             <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px">
               <div class="cal-dow">Dom</div><div class="cal-dow">Seg</div><div class="cal-dow">Ter</div>

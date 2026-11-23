@@ -38,7 +38,7 @@ function aplicaTema(t) {
   document.documentElement.setAttribute('data-theme', t);
   try { localStorage.setItem('fp_tema', t); } catch(e) {}
   const escuro = t === 'dark' || (t === 'auto' && _mqEscuro.matches);
-  document.querySelector('meta[name="theme-color"]').setAttribute('content', escuro ? '#000000' : '#ffffff');
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', escuro ? '#000000' : '#f5f8fe');
 }
 _mqEscuro.addEventListener && _mqEscuro.addEventListener('change', () => aplicaTema(temaAtual()));
 aplicaTema(temaAtual());
@@ -131,7 +131,8 @@ function deleteMeta(id) {
 }
 function renderMetas() {
   const el=document.getElementById('metas-list');
-  if (!state.metas.length) { el.innerHTML='<div class="card"><div class="empty">Nenhuma meta ainda. Crie a primeira acima.</div></div>'; return; }
+  const bar=document.querySelector('#page-metas .meta-bar'); if(bar) bar.classList.toggle('tem', state.metas.length>0);
+  if (!state.metas.length) { el.innerHTML='<div class="meta-empty"><img src="assets/pasta-vazia.png" alt="" width="605" height="460"><h2>Nada por aqui ainda.</h2><p>Você ainda não adicionou nenhuma meta.</p><button class="btn" type="button" onclick="abrirMetaForm()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Adicionar nova meta</button></div>'; return; }
   el.innerHTML=state.metas.map(m=>{
     const t=planoMeta(m), pct=Math.min(100,Math.round((m.guardado||0)/m.alvo*100));
     return `<div class="card meta-card">
