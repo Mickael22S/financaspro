@@ -33,7 +33,7 @@
     if (history.replaceState && location.hash) history.replaceState(null, '', location.pathname + location.search);
     if (appIniciado) return;
     appIniciado = true;
-    carrega('js/app.js').then(function () { return carrega('js/config.js'); })
+    carrega('js/app.js?v=5').then(function () { return carrega('js/config.js?v=5'); })
       .catch(function (e) { console.error(e); });
   }
 

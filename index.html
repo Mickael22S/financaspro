@@ -7,18 +7,21 @@
 <meta name="color-scheme" content="light dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="description" content="FinançasPro — controle de receitas, dívidas parceladas, gastos e calendário financeiro.">
-<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/fp-favicon-32-v5.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/fp-favicon-48-v5.png">
+<link rel="shortcut icon" href="assets/fp-favicon-v5.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/fp-apple-touch-v5.png">
 <title>FinançasPro</title>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("fp_tema")||"auto")}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/app.css">
-<link rel="stylesheet" href="css/config.css">
-<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/app.css?v=5">
+<link rel="stylesheet" href="css/config.css?v=5">
+<link rel="stylesheet" href="css/auth.css?v=5">
 <script src="js/vendor/supabase.js"></script>
-<script src="js/supabase-config.js"></script>
-<script src="js/api.js"></script>
+<script src="js/supabase-config.js?v=5"></script>
+<script src="js/api.js?v=5"></script>
 <script>(function(){var app=Auth.isLoggedIn();document.documentElement.setAttribute("data-view",app?"app":"auth");if(!app){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#ffffff");}})();</script>
 </head>
 <body>
@@ -29,7 +32,7 @@
     <div class="au-bubbles" aria-hidden="true">
       <span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span><span class="b5"></span><span class="b6"></span><span class="b7"></span><span class="b8"></span><span class="b9"></span>
     </div>
-    <a class="au-logo" href="#login" aria-label="FinançasPro"><img src="assets/logo-full.png" alt="FinançasPro" width="124" height="30"></a>
+    <a class="au-logo" href="#login" aria-label="FinançasPro"><img src="assets/fp-logo-v5.png" alt="FinançasPro" width="124" height="30"></a>
 
     <div class="au-col">
       <!-- LOGIN -->
@@ -623,6 +626,6 @@
 </div>
 </div>
 
-<script src="js/auth.js"></script>
+<script src="js/auth.js?v=5"></script>
 </body>
 </html>

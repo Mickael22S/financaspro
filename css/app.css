@@ -1,6 +1,7 @@
   /* ===== DESIGN TOKENS (padrão claro, estilo Apple) ===== */
   :root {
     --bg: #f5f8fe; --bg2: #ffffff; --bg3: #eef3fc;
+    --card-line: rgba(29,70,140,0.28); --cell-line: rgba(29,70,140,0.16);
     --border: rgba(29,70,140,0.16); --border2: rgba(29,70,140,0.28);
     --text: #1d1d1f; --muted: #6e6e73;
     --green: #248a3d;  --green-bg: rgba(36,138,61,0.10);
@@ -25,6 +26,7 @@
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #000; --bg2: #1c1c1e; --bg3: #000;
+      --card-line: transparent; --cell-line: transparent;
       --border: rgba(255,255,255,0.10); --border2: rgba(255,255,255,0.20);
       --text: #f5f5f7; --muted: #a1a1a6;
       --green: #30d158;  --green-bg: rgba(48,209,88,0.16);
@@ -42,6 +44,7 @@
   }
   :root[data-theme="dark"] {
     --bg: #000; --bg2: #1c1c1e; --bg3: #000;
+      --card-line: transparent; --cell-line: transparent;
     --border: rgba(255,255,255,0.10); --border2: rgba(255,255,255,0.20);
     --text: #f5f5f7; --muted: #a1a1a6;
     --green: #30d158;  --green-bg: rgba(48,209,88,0.16);
@@ -512,12 +515,12 @@
 
 /* ===== AZUL E BRANCO: contornos, logo, layout largo no PC ===== */
 .logo-mark { color: var(--accent); }
-.card, .metric-card, .drill-panel { border: 1px solid var(--border2); }
-.cal-day { border-color: var(--border); }
+.card, .metric-card, .drill-panel { border: 1px solid var(--card-line); }
+.cal-day { border-color: var(--cell-line); }
 .cal-day.selected { border-color: var(--accent); }
-.meta-card { border: 1px solid var(--border2); }
+.meta-card { border: 1px solid var(--card-line); }
 .meta-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; min-height: 58vh; padding: 24px 16px; grid-column: 1 / -1; }
-.meta-empty img { width: min(340px, 72vw); height: auto; display: block; margin-bottom: 14px; }
+.meta-empty img { width: min(320px, 70vw); height: auto; display: block; margin-bottom: 18px; filter: drop-shadow(0 20px 18px rgba(29,91,216,.20)); }
 .meta-empty h2 { font-size: clamp(26px, 3vw, 36px); font-weight: 800; letter-spacing: -0.03em; color: var(--text); }
 .meta-empty p { font-size: 16px; color: var(--muted); max-width: 420px; }
 .meta-empty .btn { margin-top: 14px; display: inline-flex; align-items: center; gap: 10px; border-radius: 16px; padding: 14px 28px; }
@@ -526,8 +529,8 @@
 .meta-bar.tem { display: flex; }
 
 @media (min-width: 769px) {
-  .logo-mark { width: auto; height: 52px; padding: 0 22px; display: flex; align-items: center; background: var(--bg2); -webkit-mask: none; mask: none; border: 1px solid var(--border2); }
-  .topnav, .gnav-right .pill, .profile-btn { border: 1px solid var(--border2); }
+  .logo-mark { width: auto; height: 52px; padding: 0 22px; display: flex; align-items: center; background: var(--bg2); -webkit-mask: none; mask: none; border: 1px solid var(--card-line); }
+  .topnav, .gnav-right .pill, .profile-btn { border: 1px solid var(--card-line); }
   .nav-item.active, .nav-item.active:hover { background: var(--accent); color: #fff; }
 }
 @media (min-width: 1100px) {
@@ -551,3 +554,84 @@
 }
 .card.meta-card { padding: 0; }
 .meta-grid > .card.meta-card:only-child { grid-column: auto; }
+
+/* tema escuro: sem brilho esbranquiçado nas bordas dos cards */
+:root[data-theme="dark"] .card, :root[data-theme="dark"] .metric-card, :root[data-theme="dark"] .drill-panel { box-shadow: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .card, :root:not([data-theme="light"]) .metric-card, :root:not([data-theme="light"]) .drill-panel { box-shadow: none; }
+}
+/* calendário: células nunca estouram o card */
+@media (min-width: 1100px) {
+  .cal-day { aspect-ratio: auto; height: 92px; min-height: 0; min-width: 0; }
+}
+
+/* =====================================================================
+   ACABAMENTO PREMIUM (v5) — contornos em degradê, camadas de sombra,
+   sem borda branca no escuro. Fica por último para vencer as regras acima.
+   ===================================================================== */
+:root {
+  --fx-fill: linear-gradient(#ffffff, #ffffff);
+  --fx-edge: linear-gradient(150deg, rgba(29,91,216,.55) 0%, rgba(96,150,255,.20) 38%, rgba(29,91,216,.10) 62%, rgba(96,150,255,.42) 100%);
+  --fx-shadow: 0 1px 1px rgba(14,38,92,.04), 0 6px 14px -6px rgba(29,91,216,.14), 0 22px 44px -22px rgba(14,38,92,.20);
+  --fx-shadow-hover: 0 2px 2px rgba(14,38,92,.05), 0 12px 24px -8px rgba(29,91,216,.22), 0 34px 60px -26px rgba(14,38,92,.28);
+  --fx-gloss: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,0) 42%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fx-fill: linear-gradient(180deg, #17181c 0%, #111215 100%);
+    --fx-edge: linear-gradient(150deg, rgba(76,140,255,.34) 0%, rgba(76,140,255,.07) 34%, rgba(76,140,255,.03) 66%, rgba(76,140,255,.24) 100%);
+    --fx-shadow: 0 1px 0 rgba(0,0,0,.6), 0 14px 30px -14px rgba(0,0,0,.85), 0 0 0 1px rgba(0,0,0,.35);
+    --fx-shadow-hover: 0 1px 0 rgba(0,0,0,.6), 0 20px 40px -14px rgba(0,0,0,.9), 0 0 40px -18px rgba(41,120,255,.45);
+    --fx-gloss: linear-gradient(180deg, rgba(76,140,255,.08), rgba(76,140,255,0) 38%);
+  }
+}
+:root[data-theme="dark"] {
+  --fx-fill: linear-gradient(180deg, #17181c 0%, #111215 100%);
+  --fx-edge: linear-gradient(150deg, rgba(76,140,255,.34) 0%, rgba(76,140,255,.07) 34%, rgba(76,140,255,.03) 66%, rgba(76,140,255,.24) 100%);
+  --fx-shadow: 0 1px 0 rgba(0,0,0,.6), 0 14px 30px -14px rgba(0,0,0,.85), 0 0 0 1px rgba(0,0,0,.35);
+  --fx-shadow-hover: 0 1px 0 rgba(0,0,0,.6), 0 20px 40px -14px rgba(0,0,0,.9), 0 0 40px -18px rgba(41,120,255,.45);
+  --fx-gloss: linear-gradient(180deg, rgba(76,140,255,.08), rgba(76,140,255,0) 38%);
+}
+
+/* cartões: preenchimento + contorno em degradê (1px) + brilho interno discreto */
+:root .card, :root .metric-card, :root .drill-panel, :root .meta-card, :root .cfg-card {
+  position: relative;
+  border: 1px solid transparent;
+  background: var(--fx-gloss) padding-box, var(--fx-fill) padding-box, var(--fx-edge) border-box;
+  box-shadow: var(--fx-shadow);
+  background-color: transparent;
+}
+:root .metric-card, :root .meta-card { transition: transform .45s var(--ease), box-shadow .45s var(--ease); }
+@media (hover: hover) {
+  :root .metric-card:hover, :root .meta-card:hover { transform: translateY(-3px); box-shadow: var(--fx-shadow-hover); }
+}
+
+/* pílulas do topo (PC) */
+@media (min-width: 769px) {
+  :root .logo-mark, :root .topnav, :root .gnav-right .pill, :root .profile-btn {
+    border: 1px solid transparent;
+    background: var(--fx-fill) padding-box, var(--fx-edge) border-box;
+    box-shadow: var(--fx-shadow);
+  }
+}
+
+/* calendário: linhas bem finas e discretas */
+:root .cal-day { border-color: var(--cell-line); }
+
+/* botão principal com profundidade */
+:root .btn {
+  background-image: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,0) 55%);
+  box-shadow: 0 1px 0 rgba(255,255,255,.28) inset, 0 8px 18px -8px rgba(29,91,216,.65);
+}
+:root .btn:hover { box-shadow: 0 1px 0 rgba(255,255,255,.28) inset, 0 12px 24px -8px rgba(29,91,216,.8); }
+
+/* estado vazio de metas */
+.meta-empty img { width: min(360px, 78vw); filter: drop-shadow(0 26px 30px rgba(29,91,216,.28)); }
+:root[data-theme="dark"] .meta-empty img { filter: drop-shadow(0 28px 34px rgba(30,100,255,.38)); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .meta-empty img { filter: drop-shadow(0 28px 34px rgba(30,100,255,.38)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .metric-card, :root .meta-card { transition: none; }
+  :root .metric-card:hover, :root .meta-card:hover { transform: none; }
+}
