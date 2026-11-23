@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-view="auth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="FinançasPro — controle de receitas, dívidas parceladas, gastos e calendário financeiro.">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<title>FinançasPro</title>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("fp_tema")||"auto")}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/config.css">
+<link rel="stylesheet" href="css/auth.css">
+<script src="js/vendor/supabase.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/api.js"></script>
+<script>(function(){var app=Auth.isLoggedIn();document.documentElement.setAttribute("data-view",app?"app":"auth");if(!app){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#ffffff");}})();</script>
+</head>
+<body>
+
+<!-- ============ TELAS DE ACESSO (login / cadastro / recuperar) ============ -->
+<div class="auth" id="auth">
+  <div class="au-stage">
+    <div class="au-bubbles" aria-hidden="true">
+      <span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span><span class="b5"></span><span class="b6"></span><span class="b7"></span><span class="b8"></span><span class="b9"></span>
+    </div>
+    <a class="au-logo" href="#login" aria-label="FinançasPro"><img src="assets/logo-full.png" alt="FinançasPro" width="124" height="30"></a>
+
+    <div class="au-col">
+      <!-- LOGIN -->
+      <section class="au-pane" id="pane-login" aria-labelledby="t-login">
+        <h1 id="t-login">Bem-vindo de volta!</h1>
+        <p class="au-lead">Faça login para continuar</p>
+        <form id="form-login" novalidate>
+          <div class="au-field">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12.2a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Zm0 2.3c-4.1 0-8 2-8 4.7V21h16v-1.8c0-2.7-3.9-4.7-8-4.7Z"/></svg>
+            <input type="text" id="lg-identificador" name="identificador" placeholder="E-mail ou usuário" autocomplete="username" autocapitalize="none" spellcheck="false">
+            
+          </div>
+          <div class="au-field">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9V7.2a5 5 0 0 0-10 0V9H5.5A1.5 1.5 0 0 0 4 10.5v9A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 18.5 9H17ZM9 7.2a3 3 0 0 1 6 0V9H9V7.2Zm4 8.8v2h-2v-2a1.7 1.7 0 1 1 2 0Z"/></svg>
+            <input type="password" id="lg-senha" name="senha" placeholder="Senha" autocomplete="current-password" >
+            <button type="button" class="au-eye" aria-label="Mostrar senha" aria-pressed="false" data-toggle-pass>
+            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c5.5 0 9 4.5 10 7a12.5 12.5 0 0 1-3.2 4.3M6.5 6.8C4.3 8.3 2.7 10.4 2 12c1 2.5 4.5 7 10 7 1.6 0 3-.4 4.2-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+            <svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12c1-2.5 4.5-7 10-7s9 4.5 10 7c-1 2.5-4.5 7-10 7S3 14.5 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          </div>
+          <div class="au-row">
+            <label class="au-check"><input type="checkbox" name="lembrar"><span class="box"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Lembrar de mim</label>
+            <a class="au-link" href="#recuperar">Esqueceu sua senha?</a>
+          </div>
+          <p class="au-msg" role="alert" aria-live="polite"></p>
+          <button class="au-btn" type="submit">Entrar</button>
+        </form>
+        <div class="au-divider">ou</div>
+        <p class="au-switch">Não tem uma conta? <a href="#cadastro">Cadastre-se</a></p>
+      </section>
+
+      <!-- CADASTRO -->
+      <section class="au-pane" id="pane-cadastro" aria-labelledby="t-cadastro" hidden>
+        <h1 id="t-cadastro">Crie sua conta</h1>
+        <p class="au-lead">Leva menos de um minuto</p>
+        <form id="form-cadastro" novalidate>
+          <div class="au-field">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12.2a4.6 4.6 0 1 0 0-9.2 4.6 4.6 0 0 0 0 9.2Zm0 2.3c-4.1 0-8 2-8 4.7V21h16v-1.8c0-2.7-3.9-4.7-8-4.7Z"/></svg>
+            <input type="text" id="cd-apelido" name="apelido" placeholder="Apelido" autocomplete="nickname" maxlength="24">
+            
+          </div>
+          <div class="au-field">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4.5h15A2.5 2.5 0 0 1 22 7v10a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17V7a2.5 2.5 0 0 1 2.5-2.5Zm-.1 2.1 7.6 5.3 7.6-5.3a.5.5 0 0 0-.1-.1h-15a.5.5 0 0 0-.1.1Z"/></svg>
+            <input type="email" id="cd-email" name="email" placeholder="E-mail" autocomplete="email" autocapitalize="none" spellcheck="false">
+            
+          </div>
+          <div class="au-field">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9V7.2a5 5 0 0 0-10 0V9H5.5A1.5 1.5 0 0 0 4 10.5v9A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 18.5 9H17ZM9 7.2a3 3 0 0 1 6 0V9H9V7.2Zm4 8.8v2h-2v-2a1.7 1.7 0 1 1 2 0Z"/></svg>
+            <input type="password" id="cd-senha" name="senha" placeholder="Senha (mín. 6 caracteres)" autocomplete="new-password" >
+            <button type="button" class="au-eye" aria-label="Mostrar senha" aria-pressed="false" data-toggle-pass>
+            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c5.5 0 9 4.5 10 7a12.5 12.5 0 0 1-3.2 4.3M6.5 6.8C4.3 8.3 2.7 10.4 2 12c1 2.5 4.5 7 10 7 1.6 0 3-.4 4.2-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+            <svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12c1-2.5 4.5-7 10-7s9 4.5 10 7c-1 2.5-4.5 7-10 7S3 14.5 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          </div>
+          <div class="au-field">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9V7.2a5 5 0 0 0-10 0V9H5.5A1.5 1.5 0 0 0 4 10.5v9A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 18.5 9H17ZM9 7.2a3 3 0 0 1 6 0V9H9V7.2Zm4 8.8v2h-2v-2a1.7 1.7 0 1 1 2 0Z"/></svg>
+            <input type="password" id="cd-senha2" name="senha2" placeholder="Confirmar senha" autocomplete="new-password" >
+            <button type="button" class="au-eye" aria-label="Mostrar senha" aria-pressed="false" data-toggle-pass>
+            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0 1 12 5c5.5 0 9 4.5 10 7a12.5 12.5 0 0 1-3.2 4.3M6.5 6.8C4.3 8.3 2.7 10.4 2 12c1 2.5 4.5 7 10 7 1.6 0 3-.4 4.2-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+            <svg class="eye-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12c1-2.5 4.5-7 10-7s9 4.5 10 7c-1 2.5-4.5 7-10 7S3 14.5 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          </div>
+          <p class="au-msg" role="alert" aria-live="polite"></p>
+          <button class="au-btn" type="submit">Criar conta</button>
+        </form>
+        <div class="au-divider">ou</div>
+        <p class="au-switch">Já tem uma conta? <a href="#login">Entrar</a></p>
+      </section>
+
+      <!-- RECUPERAR SENHA -->
+      <section class="au-pane" id="pane-recuperar" aria-labelledby="t-recuperar" hidden>
+        <h1 id="t-recuperar">Esqueceu a senha?</h1>
+        <p class="au-lead">Informe seu e-mail e enviaremos as instruções</p>
+        <form id="form-recuperar" novalidate>
+          <div class="au-field">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 4.5h15A2.5 2.5 0 0 1 22 7v10a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 17V7a2.5 2.5 0 0 1 2.5-2.5Zm-.1 2.1 7.6 5.3 7.6-5.3a.5.5 0 0 0-.1-.1h-15a.5.5 0 0 0-.1.1Z"/></svg>
+            <input type="email" id="rc-email" name="email" placeholder="E-mail cadastrado" autocomplete="email" autocapitalize="none" spellcheck="false">
+            
+          </div>
+          <p class="au-msg" role="alert" aria-live="polite"></p>
+          <button class="au-btn" type="submit">Enviar instruções</button>
+        </form>
+        <div class="au-divider">ou</div>
+        <p class="au-switch"><a href="#login">Voltar para o login</a></p>
+      </section>
+
+      <!-- NOVA SENHA (depois de clicar no link do e-mail) -->
+      <section class="au-pane" id="pane-nova-senha" aria-labelledby="t-nova-senha" hidden>
+        <h1 id="t-nova-senha">Nova senha</h1>
+        <p class="au-lead">Escolha uma senha nova para a sua conta</p>
+        <form id="form-nova-senha" novalidate>
+          <div class="au-field">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9V7.2a5 5 0 0 0-10 0V9H5.5A1.5 1.5 0 0 0 4 10.5v9A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 18.5 9H17ZM9 7.2a3 3 0 0 1 6 0V9H9V7.2Zm4 8.8v2h-2v-2a1.7 1.7 0 1 1 2 0Z"/></svg>
+            <input type="password" id="ns-senha" name="senha" placeholder="Nova senha (mín. 6 caracteres)" autocomplete="new-password">
+          </div>
+          <div class="au-field">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9V7.2a5 5 0 0 0-10 0V9H5.5A1.5 1.5 0 0 0 4 10.5v9A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 18.5 9H17ZM9 7.2a3 3 0 0 1 6 0V9H9V7.2Zm4 8.8v2h-2v-2a1.7 1.7 0 1 1 2 0Z"/></svg>
+            <input type="password" id="ns-senha2" name="senha2" placeholder="Confirmar nova senha" autocomplete="new-password">
+          </div>
+          <p class="au-msg" role="alert" aria-live="polite"></p>
+          <button class="au-btn" type="submit">Salvar nova senha</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="au-media">
+      <video data-src="assets/login-video.mp4" muted loop playsinline preload="none" poster="assets/login-poster.jpg" aria-hidden="true"></video>
+    </div>
+  </div>
+</div>
+
+<div id="app-root">
+<header class="gnav">
+  <div class="gnav-in">
+    <div class="logo-mark" role="button" tabindex="0" aria-label="FinançasPro — ir para o calendário" onclick="showPage('calendario')">Finan<span>ças</span>Pro</div>
+    <nav class="topnav" aria-label="Navegação principal">
+      <div class="nav-item active" data-page="calendario" tabindex="0" role="button" onclick="showPage('calendario')" aria-label="Calendário"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="tip">Calendário</span></div>
+      <div class="nav-item" data-page="receitas" tabindex="0" role="button" onclick="showPage('receitas')" aria-label="Receitas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span class="tip">Receitas</span></div>
+      <div class="nav-item" data-page="dividas" tabindex="0" role="button" onclick="showPage('dividas')" aria-label="Dívidas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><line x1="2" y1="10" x2="22" y2="10"/></svg><span class="tip">Dívidas</span></div>
+      <div class="nav-item" data-page="gastos" tabindex="0" role="button" onclick="showPage('gastos')" aria-label="Gastos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg><span class="tip">Gastos</span></div>
+      <div class="nav-item" data-page="dashboard" tabindex="0" role="button" onclick="showPage('dashboard')" aria-label="Dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><span class="tip">Dashboard</span></div>
+      <div class="nav-item" data-page="metas" tabindex="0" role="button" onclick="showPage('metas')" aria-label="Metas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg><span class="tip">Metas</span></div>
+    </nav>
+    <div class="gnav-right">
+      <div class="pill notif-wrap">
+        <button class="icon-btn bell" id="bell" type="button" aria-label="Avisos de vencimento" aria-haspopup="true" aria-expanded="false" aria-controls="notif-pop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span class="bell-dot" aria-hidden="true"></span><span class="bell-count" id="bell-count" aria-hidden="true"></span>
+        </button>
+        <div class="notif-pop" id="notif-pop" role="dialog" aria-label="Avisos de vencimento"></div>
+      </div>
+      <button class="profile-btn" type="button" onclick="abrirConfig()" aria-label="Perfil e configurações" aria-haspopup="dialog">
+        <span class="nav-avatar" id="nav-avatar" aria-hidden="true"></span>
+        <span class="nav-nick"><b id="nav-nome"></b><small id="nav-mail"></small></span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ CONFIGURAÇÕES ============ -->
+<div class="cfg-overlay" id="cfg-overlay"></div>
+<div class="cfg" id="cfg" role="dialog" aria-modal="true" aria-labelledby="cfg-title" aria-hidden="true">
+  <div class="cfg-grab" aria-hidden="true"></div>
+  <div class="cfg-top" id="cfg-top">
+    <button type="button" class="cfg-back" id="cfg-back" aria-label="Voltar"><svg viewBox="0 0 10 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 1.5 2 8l6.500 6.500"/></svg><span>Voltar</span></button>
+    <h2 class="cfg-title" id="cfg-title">Configurações</h2>
+    <button type="button" class="cfg-close" id="cfg-close" aria-label="Fechar"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m2 2 10 10M12 2 2 12"/></svg></button>
+  </div>
+
+  <div class="cfg-stage" id="cfg-stage">
+
+    <!-- INÍCIO -->
+    <section class="cfg-screen" data-screen="home">
+      <div class="cfg-profile">
+        <div class="cfg-avatar" id="cfg-avatar" aria-hidden="true"></div>
+        <div class="cfg-pname" id="cfg-pname"></div>
+        <div class="cfg-pmail" id="cfg-pmail"></div>
+      </div>
+      <div class="cfg-label">Preferências</div>
+      <div class="cfg-group">
+        <button type="button" class="cfg-row" data-go="tema">
+          <span class="cfg-ico purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></span><span class="cfg-t">Tema</span><span class="cfg-v" id="cfg-v-tema">Automático</span><svg class="cfg-chev" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6"/></svg>
+        </button>
+      </div>
+      <div class="cfg-label">Conta</div>
+      <div class="cfg-group">
+        <button type="button" class="cfg-row" data-go="apelido">
+          <span class="cfg-ico amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="cfg-t">Apelido</span><span class="cfg-v" id="cfg-v-apelido"> </span><svg class="cfg-chev" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6"/></svg>
+        </button>
+        <button type="button" class="cfg-row" data-go="email">
+          <span class="cfg-ico blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7.5 8 5.5 8-5.5"/></svg></span><span class="cfg-t">E-mail</span><span class="cfg-v" id="cfg-v-email"> </span><svg class="cfg-chev" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6"/></svg>
+        </button>
+        <button type="button" class="cfg-row" data-go="senha">
+          <span class="cfg-ico green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span class="cfg-t">Alterar senha</span><svg class="cfg-chev" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6"/></svg>
+        </button>
+      </div>
+      <div class="cfg-group">
+        <button type="button" class="cfg-row" data-go="sair">
+          <span class="cfg-ico gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></span><span class="cfg-t">Sair da conta</span><svg class="cfg-chev" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6"/></svg>
+        </button>
+      </div>
+      <div class="cfg-group">
+        <button type="button" class="cfg-row danger" data-go="excluir">
+          <span class="cfg-ico red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="m6 7 1 13h10l1-13"/></svg></span><span class="cfg-t">Excluir conta</span><svg class="cfg-chev" viewBox="0 0 8 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m1 1 6 6-6 6"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- TEMA -->
+    <section class="cfg-screen" data-screen="tema">
+      <div class="cfg-group" role="radiogroup" aria-label="Tema">
+        <button type="button" class="cfg-row" role="radio" aria-checked="false" data-tema="auto">
+          <span class="cfg-ico purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></span><span class="cfg-t">Automático<small>Acompanha o seu aparelho</small></span><svg class="cfg-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
+        </button>
+        <button type="button" class="cfg-row" role="radio" aria-checked="false" data-tema="light">
+          <span class="cfg-ico amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span><span class="cfg-t">Claro<small>Fundo branco</small></span><svg class="cfg-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
+        </button>
+        <button type="button" class="cfg-row" role="radio" aria-checked="false" data-tema="dark">
+          <span class="cfg-ico blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span><span class="cfg-t">Escuro<small>Fundo preto</small></span><svg class="cfg-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- APELIDO -->
+    <section class="cfg-screen" data-screen="apelido">
+      <form id="cfg-form-apelido" novalidate>
+        <div class="cfg-group">
+          <label class="cfg-field"><span>Apelido</span><input type="text" id="cfg-apelido" maxlength="24" autocomplete="nickname" placeholder="Seu apelido"></label>
+        </div>
+        <p class="cfg-note">É assim que o site te chama: “Olá, seu apelido”. Também serve para entrar na conta.</p>
+        <p class="cfg-msg" id="cfg-msg-apelido" role="status"></p>
+        <button type="submit" class="cfg-btn">Salvar apelido</button>
+      </form>
+    </section>
+
+    <!-- E-MAIL -->
+    <section class="cfg-screen" data-screen="email">
+      <div class="cfg-group">
+        <label class="cfg-field"><span>E-mail</span><input type="email" id="cfg-email" readonly tabindex="-1" aria-readonly="true"></label>
+      </div>
+      <p class="cfg-note">Este é o e-mail do seu cadastro. Cada e-mail só pode ter uma conta.</p>
+    </section>
+
+    <!-- SENHA -->
+    <section class="cfg-screen" data-screen="senha">
+      <form id="cfg-form-senha" novalidate>
+        <div class="cfg-group">
+          <label class="cfg-field"><span>Atual</span><input type="password" id="cfg-senha-atual" placeholder="Senha atual" autocomplete="current-password"></label>
+          <label class="cfg-field"><span>Nova</span><input type="password" id="cfg-senha-nova" placeholder="Mínimo 6 caracteres" autocomplete="new-password"></label>
+          <label class="cfg-field"><span>Repetir</span><input type="password" id="cfg-senha-nova2" placeholder="Repita a nova senha" autocomplete="new-password"></label>
+        </div>
+        <p class="cfg-msg" id="cfg-msg-senha" role="status"></p>
+        <button type="submit" class="cfg-btn">Alterar senha</button>
+      </form>
+    </section>
+
+    <!-- SAIR -->
+    <section class="cfg-screen" data-screen="sair">
+      <div class="cfg-hero">
+        <span class="cfg-ico gray"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg></span>
+        <h3>Sair da conta?</h3>
+        <p>Você volta para a tela de login. Seus dados continuam guardados na sua conta.</p>
+      </div>
+      <button type="button" class="cfg-btn" id="cfg-sair">Sair</button>
+      <button type="button" class="cfg-btn ghost" data-back>Cancelar</button>
+    </section>
+
+    <!-- EXCLUIR -->
+    <section class="cfg-screen" data-screen="excluir">
+      <div id="cfg-del-idle">
+        <div class="cfg-hero">
+          <span class="cfg-ico red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="m6 7 1 13h10l1-13"/></svg></span>
+          <h3>Excluir minha conta</h3>
+          <p>Você está pedindo a exclusão da sua conta e de todos os seus dados. Para confirmar, digite sua senha.</p>
+        </div>
+        <form id="cfg-form-excluir" novalidate>
+          <div class="cfg-group">
+            <label class="cfg-field"><span>Senha</span><input type="password" id="cfg-del-senha" placeholder="Sua senha" autocomplete="current-password"></label>
+          </div>
+          <p class="cfg-msg" id="cfg-msg-del" role="status"></p>
+          <button type="submit" class="cfg-btn danger">Pedir exclusão da conta</button>
+          <button type="button" class="cfg-btn ghost" data-back>Cancelar</button>
+        </form>
+      </div>
+      <div id="cfg-del-pendente" hidden>
+        <div class="cfg-hero">
+          <span class="cfg-ico amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="m6 7 1 13h10l1-13"/></svg></span>
+          <h3>Pedido enviado</h3>
+          <p id="cfg-del-pendente-txt"></p>
+        </div>
+        <button type="button" class="cfg-btn" id="cfg-del-desfazer">Cancelar pedido de exclusão</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+
+<nav class="tabbar" aria-label="Navegação principal">
+  <div class="tab active" data-page="calendario" aria-label="Calendário" role="button" tabindex="0" onclick="showPage('calendario')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span class="tab-label">Calendário</span>
+  </div>
+  <div class="tab" data-page="receitas" aria-label="Receitas" role="button" tabindex="0" onclick="showPage('receitas')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    <span class="tab-label">Receitas</span>
+  </div>
+  <div class="tab" data-page="dividas" aria-label="Dívidas" role="button" tabindex="0" onclick="showPage('dividas')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2.5"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    <span class="tab-label">Dívidas</span>
+  </div>
+  <div class="tab" data-page="gastos" aria-label="Gastos" role="button" tabindex="0" onclick="showPage('gastos')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+    <span class="tab-label">Gastos</span>
+  </div>
+  <div class="tab" data-page="dashboard" aria-label="Dashboard" role="button" tabindex="0" onclick="showPage('dashboard')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+    <span class="tab-label">Dashboard</span>
+  </div>
+  <div class="tab" data-page="metas" aria-label="Metas" role="button" tabindex="0" onclick="showPage('metas')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg>
+    <span class="tab-label">Metas</span>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-in">
+    <p class="greeting" id="greeting" aria-live="polite">Olá, <strong id="user-nick"></strong></p>
+    <h1 id="page-title">Calendário do mês</h1>
+    <p class="sub" id="page-sub">Mês a mês, dia a dia.</p>
+  </div>
+</section>
+
+<main class="main">
+
+  <!-- DASHBOARD (panorama GLOBAL) -->
+  <div class="page" id="page-dashboard">
+    <div class="section"><div class="wrap">
+      <div class="metrics-grid">
+        <div class="metric-card green clickable" onclick="toggleDashDrill('receitas')">
+          <div class="metric-label">Total de receitas</div>
+          <div class="metric-value" id="dash-receitas">R$ 0</div>
+          <div class="metric-sub" id="dash-receitas-sub">0 lançamentos</div>
+          <div class="metric-hint">Detalhar ›</div>
+        </div>
+        <div class="metric-card red clickable" onclick="toggleDashDrill('dividas')">
+          <div class="metric-label">Total a pagar (dívidas)</div>
+          <div class="metric-value" id="dash-dividas">R$ 0</div>
+          <div class="metric-sub" id="dash-dividas-sub">0 parcelas em aberto</div>
+          <div class="metric-hint">Detalhar ›</div>
+        </div>
+        <div class="metric-card amber clickable" onclick="toggleDashDrill('gastos')">
+          <div class="metric-label">Total de gastos</div>
+          <div class="metric-value" id="dash-gastos">R$ 0</div>
+          <div class="metric-sub" id="dash-gastos-sub">0 gastos registrados</div>
+          <div class="metric-hint">Detalhar ›</div>
+        </div>
+        <div class="metric-card blue clickable" onclick="toggleDashDrill('saldo')">
+          <div class="metric-label">Saldo geral</div>
+          <div class="metric-value" id="dash-saldo">R$ 0</div>
+          <div class="metric-sub" id="dash-saldo-sub">receitas - compromissos</div>
+          <div class="metric-hint">Detalhar ›</div>
+        </div>
+      </div>
+
+      <div id="drill-dash-receitas" class="drill-panel">
+        <div class="drill-header"><div class="drill-title">Todas as receitas</div><button class="drill-close" onclick="closeDashDrill()" aria-label="Fechar">×</button></div>
+        <div class="table-wrap" id="drill-dash-receitas-content"></div>
+      </div>
+      <div id="drill-dash-dividas" class="drill-panel">
+        <div class="drill-header"><div class="drill-title">Parcelas em aberto</div><button class="drill-close" onclick="closeDashDrill()" aria-label="Fechar">×</button></div>
+        <div class="table-wrap" id="drill-dash-dividas-content"></div>
+      </div>
+      <div id="drill-dash-gastos" class="drill-panel">
+        <div class="drill-header"><div class="drill-title">Todos os gastos</div><button class="drill-close" onclick="closeDashDrill()" aria-label="Fechar">×</button></div>
+        <div class="table-wrap" id="drill-dash-gastos-content"></div>
+      </div>
+      <div id="drill-dash-saldo" class="drill-panel">
+        <div class="drill-header"><div class="drill-title">Composição do saldo geral</div><button class="drill-close" onclick="closeDashDrill()" aria-label="Fechar">×</button></div>
+        <div id="drill-dash-saldo-content"></div>
+      </div>
+
+      <div class="content-grid">
+        <div class="col-main">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Últimos lançamentos</div></div>
+            <div class="table-wrap" id="dash-lancamentos-list"><div class="empty">Nenhum lançamento ainda.</div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Dívidas por banco</div></div>
+            <div id="dash-banks-list"><div class="empty">Nenhuma dívida registrada.</div></div>
+          </div>
+        </div>
+        <div class="col-side">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Situação financeira</div></div>
+            <div>
+              <div style="margin-bottom:18px">
+                <div style="display:flex;justify-content:space-between;font-size:14px;gap:8px">
+                  <span style="color:var(--muted)">Comprometimento com dívidas</span>
+                  <span id="comprometimento-pct" style="color:var(--text);white-space:nowrap;font-weight:600">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="comprometimento-bar" style="width:0%"></div></div>
+              </div>
+              <div style="margin-bottom:18px">
+                <div style="display:flex;justify-content:space-between;font-size:14px;gap:8px">
+                  <span style="color:var(--muted)">Gastos vs receitas totais</span>
+                  <span id="gastos-pct" style="color:var(--text);white-space:nowrap;font-weight:600">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="gastos-bar" style="width:0%"></div></div>
+              </div>
+              <div id="saude-msg" style="font-size:14px;color:var(--muted);padding:14px 16px;background:var(--inset);border-radius:var(--radius-sm);line-height:1.6">
+                Adicione seus dados financeiros para ver a análise.
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Receitas mensais</div></div>
+            <div class="chart-bars" id="chart-bars"></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- RECEITAS -->
+  <div class="page" id="page-receitas">
+    <div class="section"><div class="wrap narrow">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Adicionar receita</div></div>
+        <div class="form-grid">
+          <div class="form-group"><label for="rec-desc">Descrição</label><input type="text" id="rec-desc" placeholder="Ex: Salário, freelance..."></div>
+          <div class="form-group"><label for="rec-valor">Valor (R$)</label><input type="number" id="rec-valor" placeholder="0,00" step="0.01" min="0" inputmode="decimal"></div>
+          <div class="form-group"><label for="rec-cat">Categoria</label>
+            <select id="rec-cat"><option value="salario">Salário</option><option value="freelance">Freelance</option><option value="investimento">Investimento</option><option value="bonus">Bônus</option><option value="outro">Outro</option></select>
+          </div>
+          <div class="form-group"><label for="rec-data">Data</label><input type="date" id="rec-data"></div>
+          <div class="form-group full" style="display:flex;justify-content:flex-end"><button class="btn" onclick="addReceita()">Adicionar receita</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Receitas registradas</div><div id="rec-total-badge" style="font-size:15px;font-weight:600;color:var(--green)"></div></div>
+        <div class="table-wrap" id="receitas-table"><div class="empty">Nenhuma receita registrada.</div></div>
+      </div>
+    </div></div>
+  </div>
+
+
+  <!-- METAS -->
+  <div class="page" id="page-metas">
+    <div class="section"><div class="wrap narrow">
+      <div class="meta-bar"><button class="meta-add" onclick="abrirMetaForm()" aria-label="Adicionar nova meta" title="Nova meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="meta-overlay" id="meta-overlay" onclick="if(event.target===this)fecharMetaForm()">
+      <div class="card meta-modal" role="dialog" aria-modal="true" aria-label="Nova meta">
+        <div class="card-header"><div class="card-title">Nova meta</div><button class="meta-close" aria-label="Fechar" onclick="fecharMetaForm()">×</button></div>
+        <div class="form-grid">
+          <div class="form-group full"><label for="meta-obj">Qual é o seu objetivo?</label><input type="text" id="meta-obj" placeholder="Ex: Viagem para o Japão, carro, reserva de emergência..."></div>
+          <div class="form-group"><label for="meta-alvo">Quantia desejada (R$)</label><input type="number" id="meta-alvo" placeholder="0,00" step="0.01" min="0" inputmode="decimal" oninput="atualizaPreviewMeta()"></div>
+          <div class="form-group"><label for="meta-meses">Em quantos meses?</label><input type="number" id="meta-meses" placeholder="Ex: 12" min="1" inputmode="numeric" oninput="atualizaPreviewMeta()"></div>
+          <div class="form-group"><label for="meta-guardado">Já tenho guardado (R$)</label><input type="number" id="meta-guardado" placeholder="0,00 (opcional)" step="0.01" min="0" inputmode="decimal" oninput="atualizaPreviewMeta()"></div>
+          <div class="form-group"><label for="meta-capa">Foto de capa (opcional)</label><input type="file" id="meta-capa" accept="image/*" onchange="metaCapaSel(this)"></div>
+          <div class="form-group full" id="meta-capa-prev" style="display:none;height:140px;border-radius:var(--radius-sm);background-size:cover;background-position:center"></div>
+          <div class="form-group full" id="meta-preview" style="display:none"><div class="parcela-info" id="meta-preview-text"></div></div>
+          <div class="form-group full" style="display:flex;justify-content:flex-end"><button class="btn" onclick="addMeta()">Criar meta</button></div>
+        </div>
+      </div>
+      </div>
+      <div class="meta-grid" id="metas-list"></div>
+    </div></div>
+  </div>
+
+  <!-- DÍVIDAS -->
+  <div class="page" id="page-dividas">
+    <div class="section"><div class="wrap narrow">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Adicionar dívida parcelada</div></div>
+        <div class="form-grid">
+          <div class="form-group"><label for="div-desc">Descrição</label><input type="text" id="div-desc" placeholder="Ex: Cartão de crédito..."></div>
+          <div class="form-group"><label for="div-valor">Valor total da dívida (R$)</label><input type="number" id="div-valor" placeholder="0,00" step="0.01" min="0" inputmode="decimal" oninput="atualizaPreviewDivida()"></div>
+          <div class="form-group"><label for="div-banco">Banco / Financeira</label>
+            <select id="div-banco">
+              <option value="Nubank">Nubank</option><option value="Itaú">Itaú</option><option value="Bradesco">Bradesco</option>
+              <option value="Santander">Santander</option><option value="Banco do Brasil">Banco do Brasil</option>
+              <option value="Caixa">Caixa Econômica</option><option value="C6 Bank">C6 Bank</option>
+              <option value="Inter">Inter</option><option value="XP">XP Investimentos</option>
+              <option value="Sicredi">Sicredi</option><option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div class="form-group"><label for="div-parcelas">Nº de parcelas</label><input type="number" id="div-parcelas" placeholder="Ex: 12" min="1" inputmode="numeric" oninput="atualizaPreviewDivida()"></div>
+          <div class="form-group"><label for="div-venc">Vencimento da 1ª parcela</label><input type="date" id="div-venc" oninput="atualizaPreviewDivida()"></div>
+          <div class="form-group"><label for="div-status">Status inicial</label>
+            <select id="div-status"><option value="em-dia">Em dia</option><option value="atrasada">Atrasada</option></select>
+          </div>
+          <div class="form-group full" id="div-preview" style="display:none">
+            <div class="parcela-info" id="div-preview-text"></div>
+          </div>
+          <div class="form-group full" style="display:flex;justify-content:flex-end"><button class="btn" onclick="addDivida()">Adicionar dívida</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Parcelas registradas</div><div id="div-total-badge" style="font-size:15px;font-weight:600;color:var(--red)"></div></div>
+        <div class="table-wrap" id="dividas-table"><div class="empty">Nenhuma dívida registrada.</div></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- GASTOS -->
+  <div class="page" id="page-gastos">
+    <div class="section"><div class="wrap narrow">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Adicionar gasto</div></div>
+        <div class="form-grid">
+          <div class="form-group"><label for="gas-desc">Descrição</label><input type="text" id="gas-desc" placeholder="Ex: Supermercado, aluguel..."></div>
+          <div class="form-group"><label for="gas-valor">Valor (R$)</label><input type="number" id="gas-valor" placeholder="0,00" step="0.01" min="0" inputmode="decimal"></div>
+          <div class="form-group"><label for="gas-cat">Categoria</label>
+            <select id="gas-cat"><option value="moradia">Moradia</option><option value="alimentacao">Alimentação</option><option value="transporte">Transporte</option><option value="saude">Saúde</option><option value="lazer">Lazer</option><option value="educacao">Educação</option><option value="vestuario">Vestuário</option><option value="outro">Outro</option></select>
+          </div>
+          <div class="form-group"><label for="gas-data">Data</label><input type="date" id="gas-data"></div>
+          <div class="form-group full" style="display:flex;justify-content:flex-end"><button class="btn" onclick="addGasto()">Adicionar gasto</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Gastos registrados</div><div id="gas-total-badge" style="font-size:15px;font-weight:600;color:var(--amber)"></div></div>
+        <div class="table-wrap" id="gastos-table"><div class="empty">Nenhum gasto registrado.</div></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- CALENDÁRIO -->
+  <div class="page active" id="page-calendario">
+    <div class="section"><div class="wrap">
+      <div class="month-nav" id="month-nav">
+        <button class="month-btn" onclick="calMudaMes(-1)" aria-label="Mês anterior">&#8592;</button>
+        <div class="month-selector"><span id="cal-mes-label">Abril 2026</span></div>
+        <button class="month-btn" onclick="calMudaMes(1)" aria-label="Próximo mês">&#8594;</button>
+      </div>
+
+      <div class="metrics-grid-3">
+        <div class="metric-card green clickable" onclick="toggleCalDrill('receitas')">
+          <div class="metric-label">Receitas do mês</div>
+          <div class="metric-value" id="cal-total-receitas">R$ 0</div>
+          <div class="metric-sub" id="cal-sub-receitas">0 lançamentos</div>
+          <div class="metric-hint">Detalhar ›</div>
+        </div>
+        <div class="metric-card red clickable" onclick="toggleCalDrill('pagar')">
+          <div class="metric-label">Total a pagar no mês</div>
+          <div class="metric-value" id="cal-total-pagar">R$ 0</div>
+          <div class="metric-sub" id="cal-sub-pagar">parcelas + gastos</div>
+          <div class="metric-hint">Detalhar ›</div>
+        </div>
+        <div class="metric-card blue clickable" onclick="toggleCalDrill('saldo')">
+          <div class="metric-label">Saldo do mês</div>
+          <div class="metric-value" id="cal-saldo">R$ 0</div>
+          <div class="metric-sub" id="cal-sub-saldo">receitas - pagamentos</div>
+          <div class="metric-hint">Detalhar ›</div>
+        </div>
+      </div>
+
+      <div id="drill-cal-receitas" class="drill-panel">
+        <div class="drill-header"><div class="drill-title">Receitas do mês</div><button class="drill-close" onclick="closeCalDrill()" aria-label="Fechar">×</button></div>
+        <div class="table-wrap" id="drill-cal-receitas-content"></div>
+      </div>
+      <div id="drill-cal-pagar" class="drill-panel">
+        <div class="drill-header"><div class="drill-title">Total a pagar — parcelas + gastos do mês</div><button class="drill-close" onclick="closeCalDrill()" aria-label="Fechar">×</button></div>
+        <div class="table-wrap" id="drill-cal-pagar-content"></div>
+      </div>
+      <div id="drill-cal-saldo" class="drill-panel">
+        <div class="drill-header"><div class="drill-title">Composição do saldo do mês</div><button class="drill-close" onclick="closeCalDrill()" aria-label="Fechar">×</button></div>
+        <div id="drill-cal-saldo-content"></div>
+      </div>
+
+      <div class="cal-layout">
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title" id="cal-titulo">Calendário</div>
+              <div style="display:flex;gap:6px">
+                <button class="btn-ghost" onclick="calMudaMes(-1)" aria-label="Mês anterior">&#8592;</button>
+                <button class="btn-ghost" onclick="calMudaMes(1)" aria-label="Próximo mês">&#8594;</button>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px">
+              <div class="cal-dow">Dom</div><div class="cal-dow">Seg</div><div class="cal-dow">Ter</div>
+              <div class="cal-dow">Qua</div><div class="cal-dow">Qui</div><div class="cal-dow">Sex</div><div class="cal-dow">Sáb</div>
+            </div>
+            <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-header" style="margin-bottom:10px"><div class="card-title" id="cal-dia-titulo">Selecione um dia</div></div>
+            <div id="cal-dia-detalhe"><div class="empty" style="padding:14px 0">Clique em um dia.</div></div>
+          </div>
+          <div class="card">
+            <div class="card-header" style="margin-bottom:10px"><div class="card-title">Próximos vencimentos</div></div>
+            <div id="cal-proximos"><div class="empty" style="padding:10px 0">Nenhum.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Todos os lançamentos do mês</div></div>
+        <div class="table-wrap" id="cal-lista-mes"><div class="empty">Nenhum lançamento.</div></div>
+      </div>
+    </div></div>
+  </div>
+</main>
+
+<footer class="footer"><span class="footer-logo" role="img" aria-label="FinançasPro"></span></footer>
+
+<div class="notification" id="notif" role="status" aria-live="polite">
+  <div class="notif-dot"></div>
+  <span id="notif-msg">Adicionado com sucesso!</span>
+</div>
+</div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

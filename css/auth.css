@@ -1,0 +1,195 @@
+/* =====================================================================
+   FinançasPro — telas de acesso (login, cadastro, recuperar senha)
+   Tudo isolado dentro de .auth para não interferir no app.
+   ===================================================================== */
+:root {
+  --a-bg: #ffffff;
+  --a-ink: #0b0b0c;
+  --a-accent: #f26100;
+  --a-accent-hover: #d95500;
+  --a-ink-inv: #ffffff;
+  --a-muted: #5f5f66;
+  --a-line: #d9d9de;
+  --a-field-bg: #ffffff;
+  --a-err: #d70015;
+  --a-ok: #248a3d;
+  --a-font: "Figtree", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+/* As telas de acesso (login, cadastro, recuperar e nova senha) SEMPRE usam o tema claro,
+   não importa o tema escolhido no app nem o modo escuro do aparelho. */
+html[data-view="auth"] { color-scheme: light !important; }
+.auth { color-scheme: light; }
+
+/* alternância entre as telas do site */
+html[data-view="auth"] #app-root { display: none; }
+html[data-view="app"] .auth { display: none; }
+html[data-view="auth"] body { background: var(--a-bg); }
+
+/* ---------- palco ---------- */
+.auth {
+  position: fixed; inset: 0; z-index: 1000;
+  overflow-x: hidden; overflow-y: auto;
+  background: var(--a-bg); color: var(--a-ink);
+  font-family: var(--a-font); line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  text-align: left;
+}
+.auth *, .auth *::before, .auth *::after { box-sizing: border-box; }
+.auth h1, .auth p, .auth form { margin: 0; padding: 0; }
+.auth button, .auth input { font-family: inherit; }
+.auth :focus-visible { outline: 2px solid var(--a-accent); outline-offset: 3px; }
+
+.au-stage {
+  position: relative;
+  min-height: 100%;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 605px) minmax(0, 476px);
+  column-gap: clamp(32px, 6.8vw, 113px);
+  justify-content: center;
+  align-items: center;
+  padding: 96px 24px 56px;
+}
+
+/* ---------- logo ---------- */
+.au-logo {
+  position: absolute; z-index: 3;
+  top: clamp(24px, 6.9vh, 64px); left: clamp(24px, 5vw, 84px);
+  display: block; line-height: 0;
+}
+.au-logo img { display: block; height: 30px; width: auto; }
+
+/* ---------- bolinhas em movimento ---------- */
+.au-bubbles { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.au-bubbles span {
+  --k: 1;
+  position: absolute;
+  left: var(--x); top: var(--y);
+  width: calc(var(--d) * 1vw * var(--k));
+  height: calc(var(--d) * 1vw * var(--k));
+  margin: calc(var(--d) * -0.5vw * var(--k)) 0 0 calc(var(--d) * -0.5vw * var(--k));
+  border-radius: 50%;
+  background: var(--a-accent);
+  will-change: transform;
+  animation: au-float var(--t, 9s) ease-in-out var(--s, 0s) infinite;
+}
+@keyframes au-float {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  25%      { transform: translate3d(var(--dx), calc(var(--dy) * -1), 0) scale(1.05); }
+  50%      { transform: translate3d(calc(var(--dx) * -0.7), var(--dy), 0) scale(0.96); }
+  75%      { transform: translate3d(calc(var(--dx) * 0.5), calc(var(--dy) * 0.6), 0) scale(1.03); }
+}
+.au-bubbles .b1 { --x: 44.3%; --y: -2.3%;  --d: 13.2; --dx: 22px; --dy: 26px; --t: 11s; --s: -2s; }
+.au-bubbles .b2 { --x: 5.7%;  --y: 27.2%;  --d: 5;    --dx: 26px; --dy: 34px; --t: 8s;  --s: -5s; }
+.au-bubbles .b3 { --x: 3.3%;  --y: 57.9%;  --d: 2;    --dx: 22px; --dy: 40px; --t: 7s;  --s: -1s; }
+.au-bubbles .b4 { --x: -0.6%; --y: 97%;    --d: 24;   --dx: 24px; --dy: 28px; --t: 13s; --s: -6s; }
+.au-bubbles .b5 { --x: 11.1%; --y: 80.6%;  --d: 2.5;  --dx: 30px; --dy: 30px; --t: 9s;  --s: -3s; }
+.au-bubbles .b6 { --x: 101%;  --y: 25.5%;  --d: 16.4; --dx: 20px; --dy: 28px; --t: 12s; --s: -7s; }
+.au-bubbles .b7 { --x: 95%;   --y: 49.8%;  --d: 3.5;  --dx: 28px; --dy: 36px; --t: 8.5s; --s: -4s; }
+.au-bubbles .b8 { --x: 87.6%; --y: 88.1%;  --d: 2.2;  --dx: 32px; --dy: 26px; --t: 7.5s; --s: -2.5s; }
+.au-bubbles .b9 { --x: 101.7%; --y: 102%;  --d: 25.7; --dx: 26px; --dy: 24px; --t: 14s; --s: -9s; }
+
+/* ---------- formulários ---------- */
+.au-col { position: relative; z-index: 2; width: 100%; max-width: 605px; justify-self: end; }
+.au-pane { animation: au-in .45s cubic-bezier(.28,.11,.32,1) both; }
+.au-pane[hidden] { display: none; }
+@keyframes au-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.auth h1 { font-size: clamp(34px, 3.9vw, 56px); line-height: 1.08; font-weight: 800; letter-spacing: -0.03em; color: var(--a-ink); }
+.au-lead { font-size: clamp(18px, 1.7vw, 24px); color: var(--a-muted); margin-top: 6px !important; font-weight: 500; letter-spacing: -0.01em; }
+
+.auth form { margin-top: 36px !important; display: flex; flex-direction: column; gap: 16px; }
+
+.au-field { position: relative; }
+.au-field > svg.ico {
+  position: absolute; left: 30px; top: 50%; transform: translateY(-50%);
+  width: 22px; height: 22px; fill: var(--a-ink); pointer-events: none;
+}
+.au-field input {
+  display: block; width: 100%; height: 60px; min-height: 0; margin: 0;
+  border: 1.5px solid var(--a-line); border-radius: 999px;
+  background: var(--a-field-bg); color: var(--a-ink);
+  font-size: 17px; font-weight: 500;
+  padding: 0 64px 0 80px;
+  box-shadow: none; -webkit-appearance: none; appearance: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.au-field input::placeholder { color: #8a8a90; font-weight: 500; opacity: 1; }
+.au-field input:focus { outline: none; border-color: var(--a-accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--a-accent) 18%, transparent); }
+.au-field input[aria-invalid="true"] { border-color: var(--a-err); }
+.au-eye {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: transparent;
+  color: #6e6e75; display: grid; place-items: center; cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.au-eye:hover { background: color-mix(in srgb, var(--a-ink) 8%, transparent); color: var(--a-ink); }
+.au-eye svg { width: 26px; height: 26px; }
+.au-eye .eye-on { display: none; }
+.au-eye[aria-pressed="true"] .eye-on { display: block; }
+.au-eye[aria-pressed="true"] .eye-off { display: none; }
+
+.au-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: -2px; font-size: 16px; font-weight: 500; }
+.au-check { font-size: 16px; font-weight: 500; color: var(--a-ink); display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.au-check input { position: absolute; opacity: 0; width: 0; height: 0; }
+.au-check .box {
+  width: 22px; height: 22px; border: 1.5px solid var(--a-accent); border-radius: 5px;
+  display: grid; place-items: center; flex-shrink: 0; transition: background .15s;
+}
+.au-check .box svg { width: 14px; height: 14px; stroke: var(--a-ink-inv); stroke-width: 3; fill: none; opacity: 0; transition: opacity .15s; }
+.au-check input:checked + .box { background: var(--a-accent); }
+.au-check input:checked + .box svg { opacity: 1; }
+.au-check input:focus-visible + .box { outline: 2px solid var(--a-accent); outline-offset: 3px; }
+.au-link { color: var(--a-accent); text-decoration: none; font-weight: 500; }
+.au-link:hover { text-decoration: underline; }
+
+.au-btn {
+  display: block; width: 100%; height: 64px; margin: 8px 0 0; padding: 0;
+  border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--a-accent); color: var(--a-ink-inv);
+  font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
+  transition: transform .2s cubic-bezier(.28,.11,.32,1), opacity .2s;
+}
+.au-btn:hover { transform: translateY(-1px); }
+.au-btn:active { transform: scale(.985); }
+.au-btn[disabled] { opacity: .55; cursor: progress; transform: none; }
+
+.au-msg { min-height: 20px; font-size: 15px; font-weight: 600; text-align: center; }
+.au-msg.err { color: var(--a-err); }
+.au-msg.ok { color: var(--a-ok); }
+.au-msg:empty { display: none; }
+
+.au-divider { display: flex; align-items: center; gap: 16px; margin: 22px 0 18px; color: var(--a-ink); font-size: 16px; font-weight: 500; }
+.au-divider::before, .au-divider::after { content: ""; flex: 1; height: 1px; background: var(--a-line); }
+.au-switch { text-align: center; font-size: 17px; font-weight: 500; }
+.au-switch a { color: var(--a-accent); font-weight: 800; text-decoration: none; }
+.au-switch a:hover { text-decoration: underline; }
+
+/* ---------- vídeo no lugar do retângulo ---------- */
+.au-media { position: relative; z-index: 2; width: 100%; max-width: 476px; aspect-ratio: 476 / 468; border-radius: 28px; overflow: hidden; background: #000; justify-self: start; box-shadow: 0 24px 60px rgba(0,0,0,.18); }
+.au-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; display: block; }
+
+/* ---------- celular / telas estreitas ---------- */
+@media (max-width: 900px) {
+  .au-stage {
+    grid-template-columns: minmax(0, 520px);
+    row-gap: 40px;
+    align-content: center;
+    padding: 104px 22px 48px;
+  }
+  .au-col, .au-media { justify-self: center; }
+  .au-logo img { height: 26px; }
+  .auth form { margin-top: 28px !important; }
+  .au-field input { height: 56px; font-size: 16px; padding-left: 70px; }
+  .au-field > svg.ico { left: 26px; }
+  .au-btn { height: 58px; font-size: 18px; }
+  .au-bubbles span { --k: 1.6; }
+  .au-bubbles .b2, .au-bubbles .b3, .au-bubbles .b5, .au-bubbles .b7, .au-bubbles .b8 { display: none; }
+  .au-bubbles .b6 { --y: 12%; }
+  .au-media { display: none; } /* no celular o vídeo não aparece */
+}
+@media (max-width: 380px) { .au-row { font-size: 14px; } }
+@media (prefers-reduced-motion: reduce) {
+  .au-bubbles span, .au-pane { animation: none; }
+  .au-btn, .au-field input { transition: none; }
+}
