@@ -635,3 +635,243 @@
   :root .metric-card, :root .meta-card { transition: none; }
   :root .metric-card:hover, :root .meta-card:hover { transform: none; }
 }
+
+
+/* ===== LOGO VAYLENCE (imagem real; versão clara/escura conforme o tema) ===== */
+:root { --vx-logo: url(../assets/vaylence-logo-light.png); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --vx-logo: url(../assets/vaylence-logo-dark.png); }
+}
+:root[data-theme="dark"] { --vx-logo: url(../assets/vaylence-logo-dark.png); }
+
+:root .logo-mark, :root .footer-logo {
+  -webkit-mask: none; mask: none;
+}
+:root .logo-mark::before {
+  -webkit-mask: none; mask: none;
+  background: var(--vx-logo) center / contain no-repeat;
+  width: calc(22px * 1130 / 218); height: 22px;
+}
+:root .footer-logo {
+  background: var(--vx-logo) center / contain no-repeat;
+  width: calc(18px * 1130 / 218); height: 18px; opacity: .75;
+}
+@media (max-width: 768px) {
+  :root .logo-mark {
+    background: var(--vx-logo) left center / contain no-repeat;
+    width: calc(22px * 1130 / 218); height: 22px;
+  }
+}
+
+
+/* ===== DÍVIDAS: abas por mês ===== */
+.mes-tabs { display: flex; gap: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 2px 2px 12px; margin-bottom: 4px; scrollbar-width: thin; }
+.mes-tab { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 16px; border-radius: 14px; border: 1px solid var(--card-line, var(--border)); background: var(--bg2); color: var(--text); cursor: pointer; font-family: inherit; text-align: left; transition: background .2s, color .2s, border-color .2s; }
+.mes-tab:hover { border-color: var(--accent); }
+.mes-tab-nome { font-size: 14px; font-weight: 600; white-space: nowrap; }
+.mes-tab-sub { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.mes-tab.paid .mes-tab-sub { color: var(--green); }
+.mes-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.mes-tab.active .mes-tab-sub { color: rgba(255,255,255,.85); }
+.mes-resumo { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px 16px; padding: 12px 14px; background: var(--inset); border-radius: 12px; margin-bottom: 8px; }
+.mes-resumo-titulo { font-size: 16px; font-weight: 600; }
+.mes-resumo-sub { font-size: 13px; color: var(--muted); }
+.mes-resumo-valores { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.mes-resumo-valores b { color: var(--text); font-weight: 600; }
+
+
+/* =====================================================================
+   REDESIGN VAYLENCE — só visual (nenhuma lógica alterada)
+   Claro: limpo, com brilho azul suave. Escuro: vidro sobre fundo profundo.
+   ===================================================================== */
+:root {
+  --vx-blue: #2f6bff; --vx-blue-2: #1c4fe0; --vx-blue-3: #5b8cff;
+  --vx-display: "Figtree", var(--font);
+  --accent: #2f6bff; --accent-hover: #1c4fe0; --blue: #2459e6;
+  --bg: #f2f5fb; --bg2: #ffffff; --inset: #eef2fa;
+  --text: #0c1224; --muted: #5d6882;
+  --border: rgba(16,36,94,.09); --border2: rgba(16,36,94,.16);
+  --card-line: rgba(16,36,94,.08); --cell-line: rgba(16,36,94,.07);
+  --input-border: #d3dcf0;
+  --green: #12975a; --green-bg: rgba(18,151,90,.11);
+  --red: #e0334c;   --red-bg: rgba(224,51,76,.09);
+  --amber: #cf6a0a; --amber-bg: rgba(207,106,10,.11);
+  --radius: 22px; --radius-sm: 14px;
+  --fx-fill: linear-gradient(180deg, #ffffff, #fbfcff);
+  --fx-edge: linear-gradient(160deg, rgba(47,107,255,.22), rgba(16,36,94,.07) 40%, rgba(16,36,94,.06) 70%, rgba(47,107,255,.16));
+  --fx-shadow: 0 1px 2px rgba(16,36,94,.04), 0 8px 24px -10px rgba(30,70,170,.16), 0 30px 60px -34px rgba(16,36,94,.22);
+  --fx-shadow-hover: 0 2px 4px rgba(16,36,94,.05), 0 16px 34px -12px rgba(47,107,255,.28), 0 40px 70px -34px rgba(16,36,94,.28);
+  --fx-gloss: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0));
+  --ambient:
+    radial-gradient(900px 520px at 8% -8%, rgba(47,107,255,.15), transparent 62%),
+    radial-gradient(760px 480px at 96% 4%, rgba(120,92,255,.10), transparent 60%),
+    radial-gradient(700px 500px at 50% 110%, rgba(47,107,255,.08), transparent 65%);
+  --btn-grad: linear-gradient(180deg, #4a82ff 0%, #2a62f5 55%, #1c4fe0 100%);
+  --btn-glow: 0 1px 0 rgba(255,255,255,.35) inset, 0 10px 22px -8px rgba(47,107,255,.65);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #4d86ff; --accent-hover: #6f9bff; --blue: #6b9bff;
+    --bg: #05070d; --bg2: #0d1220; --inset: rgba(255,255,255,.045);
+    --text: #eef2fb; --muted: #94a0ba;
+    --border: rgba(140,170,255,.10); --border2: rgba(140,170,255,.20);
+    --card-line: transparent; --cell-line: transparent;
+    --input-bg: rgba(255,255,255,.045); --input-border: rgba(140,170,255,.18);
+    --green: #34d399; --green-bg: rgba(52,211,153,.13);
+    --red: #ff6b7d;   --red-bg: rgba(255,107,125,.13);
+    --amber: #fbab3c; --amber-bg: rgba(251,171,60,.13);
+    --fx-fill: linear-gradient(180deg, #121a2d 0%, #0b1120 100%);
+    --fx-edge: linear-gradient(160deg, rgba(110,155,255,.38), rgba(110,155,255,.08) 38%, rgba(110,155,255,.05) 66%, rgba(110,155,255,.26));
+    --fx-shadow: 0 0 0 1px rgba(0,0,0,.5), 0 18px 40px -18px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.05) inset;
+    --fx-shadow-hover: 0 0 0 1px rgba(0,0,0,.5), 0 24px 50px -16px rgba(0,0,0,.95), 0 0 46px -14px rgba(47,107,255,.55), 0 1px 0 rgba(255,255,255,.08) inset;
+    --fx-gloss: linear-gradient(180deg, rgba(120,160,255,.07), rgba(120,160,255,0) 45%);
+    --ambient:
+      radial-gradient(900px 560px at 10% -10%, rgba(47,107,255,.26), transparent 62%),
+      radial-gradient(780px 520px at 100% 0%, rgba(124,92,255,.16), transparent 60%),
+      radial-gradient(800px 520px at 50% 115%, rgba(47,107,255,.12), transparent 65%);
+    --btn-grad: linear-gradient(180deg, #5f94ff 0%, #3a73ff 55%, #2457e8 100%);
+    --btn-glow: 0 1px 0 rgba(255,255,255,.3) inset, 0 10px 28px -8px rgba(47,107,255,.8);
+  }
+}
+:root[data-theme="dark"] {
+  --accent: #4d86ff; --accent-hover: #6f9bff; --blue: #6b9bff;
+  --bg: #05070d; --bg2: #0d1220; --inset: rgba(255,255,255,.045);
+  --text: #eef2fb; --muted: #94a0ba;
+  --border: rgba(140,170,255,.10); --border2: rgba(140,170,255,.20);
+  --card-line: transparent; --cell-line: transparent;
+  --input-bg: rgba(255,255,255,.045); --input-border: rgba(140,170,255,.18);
+  --green: #34d399; --green-bg: rgba(52,211,153,.13);
+  --red: #ff6b7d;   --red-bg: rgba(255,107,125,.13);
+  --amber: #fbab3c; --amber-bg: rgba(251,171,60,.13);
+  --fx-fill: linear-gradient(180deg, #121a2d 0%, #0b1120 100%);
+  --fx-edge: linear-gradient(160deg, rgba(110,155,255,.38), rgba(110,155,255,.08) 38%, rgba(110,155,255,.05) 66%, rgba(110,155,255,.26));
+  --fx-shadow: 0 0 0 1px rgba(0,0,0,.5), 0 18px 40px -18px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.05) inset;
+  --fx-shadow-hover: 0 0 0 1px rgba(0,0,0,.5), 0 24px 50px -16px rgba(0,0,0,.95), 0 0 46px -14px rgba(47,107,255,.55), 0 1px 0 rgba(255,255,255,.08) inset;
+  --fx-gloss: linear-gradient(180deg, rgba(120,160,255,.07), rgba(120,160,255,0) 45%);
+  --ambient:
+    radial-gradient(900px 560px at 10% -10%, rgba(47,107,255,.26), transparent 62%),
+    radial-gradient(780px 520px at 100% 0%, rgba(124,92,255,.16), transparent 60%),
+    radial-gradient(800px 520px at 50% 115%, rgba(47,107,255,.12), transparent 65%);
+  --btn-grad: linear-gradient(180deg, #5f94ff 0%, #3a73ff 55%, #2457e8 100%);
+  --btn-glow: 0 1px 0 rgba(255,255,255,.3) inset, 0 10px 28px -8px rgba(47,107,255,.8);
+}
+
+/* fundo com brilho ambiente fixo */
+:root[data-view="app"] body { background: var(--bg); }
+:root[data-view="app"] body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: var(--ambient);
+}
+::selection { background: rgba(47,107,255,.28); }
+
+/* a faixa do título deixa o fundo ambiente aparecer */
+:root .hero { background: transparent; }
+@media (max-width: 768px) { :root .hero { background: transparent; } }
+
+/* títulos */
+:root .hero h1, :root .card-title, :root .metric-value, :root .cfg-hero h2 { font-family: var(--vx-display); }
+:root .hero h1 {
+  font-weight: 800; letter-spacing: -0.04em;
+  background: linear-gradient(100deg, var(--text) 30%, var(--accent) 130%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+}
+:root .hero p.sub { color: var(--muted); }
+:root .card-title { font-weight: 700; letter-spacing: -0.03em; }
+
+/* cartões: cantos, brilho e barra de cor nos indicadores */
+:root .card, :root .metric-card, :root .drill-panel, :root .meta-card, :root .cfg-card { border-radius: var(--radius); }
+:root .metric-card { overflow: hidden; --mc: var(--accent); }
+:root .metric-card.green  { --mc: var(--green); }
+:root .metric-card.red    { --mc: var(--red); }
+:root .metric-card.amber  { --mc: var(--amber); }
+:root .metric-card.blue   { --mc: var(--accent); }
+:root .metric-card.purple { --mc: var(--purple); }
+:root .metric-card::before {
+  content: ""; position: absolute; right: -40px; top: -50px; width: 170px; height: 170px; border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--mc) 24%, transparent), transparent 68%);
+  pointer-events: none; transition: opacity .4s var(--ease); opacity: .85;
+}
+:root .metric-label { font-size: 13px; font-weight: 600; letter-spacing: .01em; text-transform: none; color: var(--muted); }
+:root .metric-value { font-weight: 800; letter-spacing: -0.04em; font-size: clamp(24px, 2.8vw, 33px); }
+:root .metric-card .link, :root .metric-card [class*="detal"] { color: var(--accent); font-weight: 600; }
+
+/* navegação */
+:root .nav-item { font-weight: 500; transition: color .25s var(--ease), background .25s var(--ease), box-shadow .25s var(--ease); }
+@media (min-width: 769px) {
+  :root .nav-item:hover:not(.active) { background: var(--fill); }
+  :root .nav-item.active, :root .nav-item.active:hover {
+    background: var(--btn-grad); color: #fff; box-shadow: var(--btn-glow);
+  }
+}
+:root .profile-btn .avatar, :root .avatar { background: linear-gradient(135deg, #5b8cff, #2f6bff); color: #fff; }
+:root .gnav { border-bottom-color: transparent; }
+
+/* botões */
+:root .btn { background: var(--btn-grad); box-shadow: var(--btn-glow); border-radius: 14px; font-weight: 600; letter-spacing: -0.01em; transition: transform .25s var(--ease), box-shadow .25s var(--ease), filter .25s; }
+:root .btn:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: var(--btn-glow); }
+:root .btn:active { transform: translateY(0) scale(.99); }
+:root .btn-pagar { border: 1px solid color-mix(in srgb, var(--green) 28%, transparent); font-weight: 600; }
+:root .btn-pagar:hover { background: var(--green); color: #fff; }
+
+/* campos */
+:root input, :root select, :root textarea { border-radius: 14px; transition: border-color .2s, box-shadow .2s, background .2s; }
+:root input:hover, :root select:hover { border-color: var(--border2); }
+:root input:focus, :root select:focus, :root textarea:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+:root label { font-weight: 600; font-size: 13px; letter-spacing: .01em; color: var(--muted); }
+
+/* tabelas */
+:root th { text-transform: uppercase; letter-spacing: .07em; font-size: 11px; font-weight: 700; color: var(--muted); }
+@media (min-width: 769px) {
+  :root tbody tr { transition: background .2s; }
+  :root tbody tr:hover { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+}
+:root .badge { font-weight: 600; border: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+:root .delete-btn:hover { background: var(--red-bg); color: var(--red); }
+
+/* barras de progresso */
+:root .progress-bar { height: 8px; }
+:root .progress-fill { box-shadow: 0 0 14px -2px currentColor; filter: saturate(1.15); }
+
+/* calendário */
+:root .cal-day { transition: transform .2s var(--ease), background .2s, border-color .2s, box-shadow .2s; }
+@media (hover: hover) { :root .cal-day:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--accent) 70%, transparent); } }
+:root .cal-day.selected { background: color-mix(in srgb, var(--accent) 12%, var(--inset)); box-shadow: 0 0 0 1px var(--accent) inset; }
+:root .cal-day.hoje .cal-day-num { background: var(--btn-grad); box-shadow: 0 4px 12px -2px rgba(47,107,255,.6); }
+
+/* abas de mês (dívidas) */
+:root .mes-tab { border-radius: 16px; background: var(--fx-fill); box-shadow: 0 1px 2px rgba(16,36,94,.05); }
+:root .mes-tab:hover { transform: translateY(-1px); }
+:root .mes-tab.active { background: var(--btn-grad); border-color: transparent; box-shadow: var(--btn-glow); }
+:root .mes-resumo { background: color-mix(in srgb, var(--accent) 7%, var(--inset)); border: 1px solid var(--border); border-radius: 16px; }
+
+/* barra inferior no celular: vidro flutuante */
+@media (max-width: 768px) {
+  :root .tabbar {
+    background: color-mix(in srgb, var(--bg2) 78%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(22px); backdrop-filter: saturate(180%) blur(22px);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -12px 30px -18px rgba(0,0,0,.35);
+  }
+  :root .tab.active { color: var(--accent); }
+  :root .tab.active svg { filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--accent) 70%, transparent)); }
+  :root .hero h1 { font-size: 34px; }
+}
+
+/* barras de rolagem discretas */
+* { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--muted) 40%, transparent) transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root .btn, :root .cal-day, :root .mes-tab { transition: none; }
+}
+
+/* topo (PC): sem faixa, o brilho de fundo continua por baixo das pílulas */
+@media (min-width: 769px) {
+  :root .gnav {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 88%, transparent) 0%, color-mix(in srgb, var(--bg) 55%, transparent) 70%, transparent 100%);
+    -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom: 0;
+  }
+}
+:root .mes-tabs { padding: 6px 6px 14px; margin: -4px -6px 0; }

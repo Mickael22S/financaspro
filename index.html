@@ -7,16 +7,16 @@
 <meta name="color-scheme" content="light dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="description" content="FinançasPro — controle de receitas, dívidas parceladas, gastos e calendário financeiro.">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/fp-favicon-32-v5.png">
-<link rel="icon" type="image/png" sizes="48x48" href="assets/fp-favicon-48-v5.png">
-<link rel="shortcut icon" href="assets/fp-favicon-v5.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/fp-apple-touch-v5.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/vx-favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/vx-favicon-48.png">
+<link rel="shortcut icon" href="assets/vx-favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/vx-apple-touch.png">
 <title>FinançasPro</title>
 <script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("fp_tema")||"auto")}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/app.css?v=5">
+<link rel="stylesheet" href="css/app.css?v=6">
 <link rel="stylesheet" href="css/config.css?v=5">
 <link rel="stylesheet" href="css/auth.css?v=5">
 <script src="js/vendor/supabase.js"></script>
@@ -32,7 +32,7 @@
     <div class="au-bubbles" aria-hidden="true">
       <span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span><span class="b5"></span><span class="b6"></span><span class="b7"></span><span class="b8"></span><span class="b9"></span>
     </div>
-    <a class="au-logo" href="#login" aria-label="FinançasPro"><img src="assets/fp-logo-v5.png" alt="FinançasPro" width="124" height="30"></a>
+    <a class="au-logo" href="#login" aria-label="Vaylence"><img src="assets/vaylence-logo-light.png" alt="Vaylence" width="156" height="30"></a>
 
     <div class="au-col">
       <!-- LOGIN -->
@@ -147,7 +147,7 @@
 <div id="app-root">
 <header class="gnav">
   <div class="gnav-in">
-    <div class="logo-mark" role="button" tabindex="0" aria-label="FinançasPro — ir para o calendário" onclick="showPage('calendario')">Finan<span>ças</span>Pro</div>
+    <div class="logo-mark" role="button" tabindex="0" aria-label="Vaylence — ir para o calendário" onclick="showPage('calendario')"></div>
     <nav class="topnav" aria-label="Navegação principal">
       <div class="nav-item active" data-page="calendario" tabindex="0" role="button" onclick="showPage('calendario')" aria-label="Calendário"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2.5"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="tip">Calendário</span></div>
       <div class="nav-item" data-page="receitas" tabindex="0" role="button" onclick="showPage('receitas')" aria-label="Receitas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span class="tip">Receitas</span></div>
@@ -515,6 +515,7 @@
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Parcelas registradas</div><div id="div-total-badge" style="font-size:15px;font-weight:600;color:var(--red)"></div></div>
+        <div class="mes-tabs" id="div-month-tabs" role="tablist" aria-label="Meses"></div>
         <div class="table-wrap" id="dividas-table"><div class="empty">Nenhuma dívida registrada.</div></div>
       </div>
     </div></div>
@@ -618,7 +619,7 @@
   </div>
 </main>
 
-<footer class="footer"><span class="footer-logo" role="img" aria-label="FinançasPro"></span></footer>
+<footer class="footer"><span class="footer-logo" role="img" aria-label="Vaylence"></span></footer>
 
 <div class="notification" id="notif" role="status" aria-live="polite">
   <div class="notif-dot"></div>

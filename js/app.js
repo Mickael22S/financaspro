@@ -411,6 +411,7 @@ function addDivida() {
   run(async()=>{
     const novas=await Data.addDividas(lista);
     state.dividas.push(...novas);
+    if (novas.length && novas[0].venc) divMesSel = novas[0].venc.slice(0, 7);
     renderDividas(); renderDashboard();
     document.getElementById('div-desc').value=''; document.getElementById('div-valor').value='';
     document.getElementById('div-parcelas').value=''; document.getElementById('div-preview').style.display='none';
@@ -481,41 +482,75 @@ function renderReceitas() {
   </tbody></table>`;
 }
 
+let divMesSel = null; // mês selecionado na aba Dívidas (YYYY-MM)
+
+function selecionaMesDivida(k) { divMesSel = k; renderDividas(); }
+
+function excluirDividaInteira(grupoId) {
+  const n = state.dividas.filter(d => d.grupoId === grupoId).length;
+  if (!confirm(`Excluir esta dívida inteira (${n} parcela(s), em todos os meses)?`)) return;
+  deleteGrupoDivida(grupoId);
+}
+
 function renderDividas() {
-  const el=document.getElementById('dividas-table');
-  const abertas=state.dividas.filter(d=>d.status!=='quitada');
-  document.getElementById('div-total-badge').textContent=abertas.length
-    ?`${abertas.length} em aberto: ${fmt(abertas.reduce((s,d)=>s+d.valorParcela,0))}`:'';
-  if (!state.dividas.length) { el.innerHTML='<div class="empty">Nenhuma dívida registrada.</div>'; return; }
-  const grupos={};
-  state.dividas.forEach(d=>{ if(!grupos[d.grupoId]) grupos[d.grupoId]=[]; grupos[d.grupoId].push(d); });
-  const sb={'em-dia':'green','atrasada':'red','quitada':'blue'};
-  let rows='';
-  Object.values(grupos).forEach(parcs=>{
-    parcs.sort((a,b)=>a.numParcela-b.numParcela);
-    const g=parcs[0];
-    const pagas=parcs.filter(p=>p.status==='quitada').length;
-    rows+=`<tr style="background:var(--inset)"><td colspan="5" style="padding:12px 14px;border-bottom:1px solid var(--border)">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
-        <div style="min-width:0"><span style="font-size:15px;font-weight:600">${esc(g.desc)}</span>
-        <span style="font-size:13px;color:var(--muted);margin-left:8px">${esc(g.banco)} · ${parcs.length}x de ${fmt(g.valorParcela)}</span></div>
-        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-          <span style="font-size:13px;color:var(--muted)">${pagas}/${parcs.length} pagas</span>
-          <button class="delete-btn txt" aria-label="Excluir dívida" onclick="deleteGrupoDivida('${g.grupoId}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>Excluir</button>
-        </div>
-      </div></td></tr>`;
-    parcs.forEach(d=>{
-      const acao=d.status!=='quitada'
-        ?`<button class="btn-pagar" onclick="marcarPaga('${d.id}')">✓ Pago</button>`
-        :`<span style="font-size:12px;color:var(--blue)">quitada</span>`;
-      rows+=`<tr><td style="padding-left:14px;color:var(--muted);font-size:14px">${d.numParcela}/${d.totalParcelas}</td>
-        <td style="color:var(--muted)">${fmtDate(d.venc)}</td>
-        <td><span class="badge ${sb[d.status]}"><span class="badge-dot"></span>${d.status}</span></td>
-        <td style="color:${d.status==='quitada'?'var(--muted)':'var(--red)'};font-weight:600">${fmt(d.valorParcela)}</td>
-        <td>${acao}</td></tr>`;
-    });
+  const el = document.getElementById('dividas-table');
+  const tabsEl = document.getElementById('div-month-tabs');
+  const abertas = state.dividas.filter(d => d.status !== 'quitada');
+  document.getElementById('div-total-badge').textContent = abertas.length
+    ? `${abertas.length} em aberto: ${fmt(abertas.reduce((s, d) => s + d.valorParcela, 0))}` : '';
+  if (!state.dividas.length) {
+    tabsEl.innerHTML = '';
+    el.innerHTML = '<div class="empty">Nenhuma dívida registrada.</div>';
+    return;
+  }
+  // agrupa as parcelas por mês de vencimento
+  const meses = {};
+  state.dividas.forEach(d => {
+    const k = (d.venc || '').slice(0, 7) || 'sem-data';
+    (meses[k] = meses[k] || []).push(d);
   });
-  el.innerHTML=`<table><thead><tr><th style="padding-left:14px">Parcela</th><th>Vencimento</th><th>Status</th><th>Valor</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+  const chaves = Object.keys(meses).sort();
+  if (!divMesSel || !meses[divMesSel]) {
+    const hoje = new Date(); const atual = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0');
+    divMesSel = meses[atual] ? atual : (chaves.find(k => k >= atual) || chaves[chaves.length - 1]);
+  }
+  const rotulo = (k, longo) => {
+    if (k === 'sem-data') return 'Sem data';
+    const [y, m] = k.split('-');
+    return longo ? `${MESES[+m - 1]} de ${y}` : `${MESES[+m - 1].slice(0, 3)}/${y}`;
+  };
+  tabsEl.innerHTML = chaves.map(k => {
+    const abertasMes = meses[k].filter(d => d.status !== 'quitada').length;
+    const ativo = k === divMesSel;
+    return `<button type="button" class="mes-tab${ativo ? ' active' : ''}${abertasMes === 0 ? ' paid' : ''}" role="tab" aria-selected="${ativo}" onclick="selecionaMesDivida('${k}')">
+      <span class="mes-tab-nome">${rotulo(k, false)}</span>
+      <span class="mes-tab-sub">${abertasMes ? abertasMes + (abertasMes === 1 ? ' em aberto' : ' em aberto') : '✓ quitado'}</span></button>`;
+  }).join('');
+  const ativoBtn = tabsEl.querySelector('.mes-tab.active');
+  if (ativoBtn && ativoBtn.scrollIntoView) { try { tabsEl.scrollTo({ left: ativoBtn.offsetLeft - 16, behavior: 'auto' }); } catch (e) {} }
+
+  // conteúdo do mês selecionado
+  const lista = meses[divMesSel].slice().sort((a, b) => (a.venc || '').localeCompare(b.venc || '') || String(a.desc).localeCompare(String(b.desc)));
+  const totalMes = lista.reduce((t, d) => t + d.valorParcela, 0);
+  const pendMes = lista.filter(d => d.status !== 'quitada').reduce((t, d) => t + d.valorParcela, 0);
+  const sb = { 'em-dia': 'green', 'atrasada': 'red', 'quitada': 'blue' };
+  const linhas = lista.map(d => {
+    const acao = d.status !== 'quitada'
+      ? `<button class="btn-pagar" onclick="marcarPaga('${d.id}')">✓ Pago</button>`
+      : `<span style="font-size:12px;color:var(--blue)">quitada</span>`;
+    return `<tr>
+      <td style="padding-left:14px"><div style="font-weight:600">${esc(d.desc)}</div><div style="font-size:13px;color:var(--muted)">${esc(d.banco)}</div></td>
+      <td style="color:var(--muted);font-size:14px">${d.numParcela}/${d.totalParcelas}</td>
+      <td style="color:var(--muted)">${fmtDate(d.venc)}</td>
+      <td><span class="badge ${sb[d.status] || 'green'}"><span class="badge-dot"></span>${d.status}</span></td>
+      <td style="color:${d.status === 'quitada' ? 'var(--muted)' : 'var(--red)'};font-weight:600">${fmt(d.valorParcela)}</td>
+      <td>${acao}</td>
+      <td><button class="delete-btn" aria-label="Excluir dívida inteira" title="Excluir dívida inteira (todas as parcelas)" onclick="excluirDividaInteira('${d.grupoId}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg></button></td></tr>`;
+  }).join('');
+  el.innerHTML = `<div class="mes-resumo"><div><div class="mes-resumo-titulo">${rotulo(divMesSel, true)}</div>
+      <div class="mes-resumo-sub">${lista.length} ${lista.length === 1 ? 'parcela' : 'parcelas'} neste mês</div></div>
+      <div class="mes-resumo-valores"><span>Total do mês: <b>${fmt(totalMes)}</b></span><span>A pagar: <b style="color:var(--red)">${fmt(pendMes)}</b></span></div></div>
+    <table><thead><tr><th style="padding-left:14px">Dívida</th><th>Parcela</th><th>Vencimento</th><th>Status</th><th>Valor</th><th></th><th></th></tr></thead><tbody>${linhas}</tbody></table>`;
 }
 
 function renderGastos() {
