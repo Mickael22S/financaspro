@@ -49,3 +49,9 @@ em *Authentication > Emails > SMTP Settings*.
 | `js/auth.js` | Login, cadastro, recuperar senha, nova senha |
 | `js/app.js` | Lógica do app financeiro e avisos de vencimento |
 | `js/config.js` | Configurações e perfil no topo |
+
+## Estrutura das páginas
+- `index.html` — página inicial pública (apresentação do site, indexável pelo Google).
+- `app.html` — o aplicativo (login, cadastro e painel). Não é indexado (`noindex`).
+- Links de e-mail do Supabase (confirmar conta / recuperar senha) e usuários já logados que abrirem a página inicial são encaminhados automaticamente para `app.html`.
+- `robots.txt` — libera a página inicial para o Google e bloqueia o app.

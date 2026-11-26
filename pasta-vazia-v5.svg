@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360" role="img" aria-label="Pasta vazia">
+<defs>
+<linearGradient id="back" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b97ff"/><stop offset="1" stop-color="#2358d6"/></linearGradient>
+<linearGradient id="front" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76aaff"/><stop offset=".55" stop-color="#3f7bf0"/><stop offset="1" stop-color="#1f4fc9"/></linearGradient>
+<linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfe0ff"/></linearGradient>
+<linearGradient id="rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<radialGradient id="floor" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#2a6bff" stop-opacity=".38"/><stop offset="1" stop-color="#2a6bff" stop-opacity="0"/></radialGradient>
+</defs>
+<ellipse cx="240" cy="326" rx="170" ry="20" fill="url(#floor)"/>
+<path d="M58 84c0-14 11-26 25-26h86c9 0 17 4 22 11l9 12c3 4 7 6 12 6h162c15 0 26 11 26 26v178c0 14-11 25-25 25H83c-14 0-25-11-25-25z" fill="url(#back)"/>
+<g transform="rotate(-3 240 170)"><rect x="84" y="102" width="312" height="190" rx="14" fill="url(#paper)"/><rect x="112" y="136" width="150" height="10" rx="5" fill="#9dbcf5"/><rect x="112" y="160" width="220" height="10" rx="5" fill="#bcd2fa"/><rect x="112" y="184" width="190" height="10" rx="5" fill="#bcd2fa"/></g>
+<path d="M52 152c0-14 12-26 27-26h322c16 0 28 13 26 28l-20 152c-2 14-14 24-28 24H80c-15 0-27-12-27-27z" fill="url(#front)"/>
+<path d="M79 126h322c16 0 28 13 26 28l-1 6c-3-13-14-22-27-22H80c-14 0-25 8-28 20-1-18 12-32 27-32z" fill="url(#rim)"/>
+<path d="M54 326c-1 0 0 0 0 0" fill="none"/>
+</svg>
