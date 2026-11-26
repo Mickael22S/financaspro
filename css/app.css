@@ -946,3 +946,93 @@
 :root .metric-card:hover, :root .meta-card:hover { transform: none; }
 :root input:focus, :root select:focus, :root textarea:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 24%, transparent); }
 :root .hero h1 { background: none; -webkit-text-fill-color: currentColor; color: var(--text); }
+
+
+/* =====================================================================
+   TEMA ESCURO ESTILO APPLE (preto puro, cinza-grafite, azul do sistema)
+   + BARRA INFERIOR DO CELULAR CORRIGIDA
+   ===================================================================== */
+:root { --glow-op: .45; --nav-active-bg: var(--accent); --nav-active-fg: #fff; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000; --bg2: #1c1c1e; --bg3: #000; --hero-bg: transparent; --inset: #2c2c2e;
+    --text: #f5f5f7; --muted: #98989d; --tab-off: #98989d;
+    --accent: #0a84ff; --accent-hover: #409cff; --blue: #0a84ff; --blue-bg: rgba(10,132,255,.18);
+    --green: #30d158; --green-bg: rgba(48,209,88,.16);
+    --red: #ff453a;   --red-bg: rgba(255,69,58,.16);
+    --amber: #ff9f0a; --amber-bg: rgba(255,159,10,.16);
+    --purple: #bf5af2; --purple-bg: rgba(191,90,242,.16);
+    --border: rgba(84,84,88,.55); --border2: rgba(120,120,128,.5);
+    --card-line: transparent; --cell-line: transparent;
+    --input-bg: #2c2c2e; --input-border: #3a3a3c;
+    --fill: rgba(120,120,128,.24); --fill-hover: rgba(120,120,128,.36); --track: rgba(120,120,128,.32);
+    --fx-fill: linear-gradient(#1c1c1e, #1c1c1e);
+    --fx-edge: linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06));
+    --fx-gloss: linear-gradient(transparent, transparent);
+    --fx-shadow: none; --fx-shadow-hover: none;
+    --ambient: none; --glow-op: 0;
+    --vx-display: var(--font);
+    --btn-grad: var(--accent);
+    --nav-active-bg: #636366; --nav-active-fg: #fff;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #000; --bg2: #1c1c1e; --bg3: #000; --hero-bg: transparent; --inset: #2c2c2e;
+  --text: #f5f5f7; --muted: #98989d; --tab-off: #98989d;
+  --accent: #0a84ff; --accent-hover: #409cff; --blue: #0a84ff; --blue-bg: rgba(10,132,255,.18);
+  --green: #30d158; --green-bg: rgba(48,209,88,.16);
+  --red: #ff453a;   --red-bg: rgba(255,69,58,.16);
+  --amber: #ff9f0a; --amber-bg: rgba(255,159,10,.16);
+  --purple: #bf5af2; --purple-bg: rgba(191,90,242,.16);
+  --border: rgba(84,84,88,.55); --border2: rgba(120,120,128,.5);
+  --card-line: transparent; --cell-line: transparent;
+  --input-bg: #2c2c2e; --input-border: #3a3a3c;
+  --fill: rgba(120,120,128,.24); --fill-hover: rgba(120,120,128,.36); --track: rgba(120,120,128,.32);
+  --fx-fill: linear-gradient(#1c1c1e, #1c1c1e);
+  --fx-edge: linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06));
+  --fx-gloss: linear-gradient(transparent, transparent);
+  --fx-shadow: none; --fx-shadow-hover: none;
+  --ambient: none; --glow-op: 0;
+  --vx-display: var(--font);
+  --btn-grad: var(--accent);
+  --nav-active-bg: #636366; --nav-active-fg: #fff;
+}
+:root .metric-card::before { opacity: var(--glow-op); }
+:root .hero h1, :root .card-title, :root .metric-value { font-family: var(--vx-display); }
+@media (min-width: 769px) {
+  :root .nav-item.active, :root .nav-item.active:hover { background: var(--nav-active-bg); color: var(--nav-active-fg); }
+}
+:root .mes-tab.active { background: var(--nav-active-bg); color: var(--nav-active-fg); }
+:root .mes-tab.active .mes-tab-sub { color: rgba(255,255,255,.8); }
+
+/* botão e metas no escuro: azul do sistema, plano */
+:root .btn { color: #fff; }
+
+/* barra inferior (celular): vidro que funciona nos dois temas */
+@media (max-width: 768px) {
+  :root .tabbar {
+    background: rgba(255,255,255,.86);
+    border: 1px solid rgba(16,36,94,.10);
+    -webkit-backdrop-filter: saturate(180%) blur(24px); backdrop-filter: saturate(180%) blur(24px);
+    box-shadow: 0 8px 24px -10px rgba(16,36,94,.28);
+  }
+  :root .tab { color: #5d6882; }
+  :root .tab.active { background: rgba(45,86,179,.13); color: var(--accent); }
+  :root .tab.active svg { filter: none; }
+}
+@media (max-width: 768px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tabbar {
+    background: rgba(28,28,30,.86); border-color: rgba(255,255,255,.10);
+    box-shadow: 0 8px 24px -8px rgba(0,0,0,.7);
+  }
+  :root:not([data-theme="light"]) .tab { color: rgba(235,235,245,.62); }
+  :root:not([data-theme="light"]) .tab.active { background: rgba(120,120,128,.36); color: #fff; }
+}
+@media (max-width: 768px) {
+  :root[data-theme="dark"] .tabbar { background: rgba(28,28,30,.86); border-color: rgba(255,255,255,.10); box-shadow: 0 8px 24px -8px rgba(0,0,0,.7); }
+  :root[data-theme="dark"] .tab { color: rgba(235,235,245,.62); }
+  :root[data-theme="dark"] .tab.active { background: rgba(120,120,128,.36); color: #fff; }
+  :root[data-theme="light"] .tabbar { background: rgba(255,255,255,.86); border-color: rgba(16,36,94,.10); box-shadow: 0 8px 24px -10px rgba(16,36,94,.28); }
+  :root[data-theme="light"] .tab { color: #5d6882; }
+  :root[data-theme="light"] .tab.active { background: rgba(45,86,179,.13); color: var(--accent); }
+}
