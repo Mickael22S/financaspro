@@ -875,3 +875,74 @@
   }
 }
 :root .mes-tabs { padding: 6px 6px 14px; margin: -4px -6px 0; }
+
+
+/* =====================================================================
+   AJUSTE: botões planos (sem efeito 3D) e azul menos neon
+   ===================================================================== */
+:root {
+  --accent: #2d56b3; --accent-hover: #234795; --blue: #2d56b3; --blue-bg: rgba(45,86,179,.10);
+  --lilac-deep: #5f7fbf;
+  --btn-grad: var(--accent);
+  --btn-glow: none;
+  --fx-edge: linear-gradient(160deg, rgba(45,86,179,.16), rgba(16,36,94,.07) 40%, rgba(16,36,94,.06) 70%, rgba(45,86,179,.12));
+  --fx-shadow: 0 1px 2px rgba(16,36,94,.05), 0 10px 26px -16px rgba(16,36,94,.18);
+  --fx-shadow-hover: 0 2px 4px rgba(16,36,94,.06), 0 14px 30px -16px rgba(16,36,94,.24);
+  --ambient:
+    radial-gradient(900px 520px at 8% -8%, rgba(45,86,179,.09), transparent 62%),
+    radial-gradient(760px 480px at 96% 4%, rgba(100,90,190,.05), transparent 60%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #4f7fd9; --accent-hover: #6a93e2; --blue: #7ea3ea; --blue-bg: rgba(79,127,217,.16);
+    --btn-grad: var(--accent); --btn-glow: none;
+    --fx-edge: linear-gradient(160deg, rgba(120,150,215,.26), rgba(120,150,215,.07) 40%, rgba(120,150,215,.05) 66%, rgba(120,150,215,.18));
+    --fx-shadow: 0 0 0 1px rgba(0,0,0,.45), 0 16px 34px -18px rgba(0,0,0,.85);
+    --fx-shadow-hover: 0 0 0 1px rgba(0,0,0,.45), 0 20px 40px -18px rgba(0,0,0,.9);
+    --fx-gloss: linear-gradient(180deg, rgba(120,150,215,.04), rgba(120,150,215,0) 45%);
+    --ambient:
+      radial-gradient(900px 560px at 10% -10%, rgba(79,127,217,.13), transparent 62%),
+      radial-gradient(780px 520px at 100% 0%, rgba(110,95,200,.07), transparent 60%);
+  }
+}
+:root[data-theme="dark"] {
+  --accent: #4f7fd9; --accent-hover: #6a93e2; --blue: #7ea3ea; --blue-bg: rgba(79,127,217,.16);
+  --btn-grad: var(--accent); --btn-glow: none;
+  --fx-edge: linear-gradient(160deg, rgba(120,150,215,.26), rgba(120,150,215,.07) 40%, rgba(120,150,215,.05) 66%, rgba(120,150,215,.18));
+  --fx-shadow: 0 0 0 1px rgba(0,0,0,.45), 0 16px 34px -18px rgba(0,0,0,.85);
+  --fx-shadow-hover: 0 0 0 1px rgba(0,0,0,.45), 0 20px 40px -18px rgba(0,0,0,.9);
+  --fx-gloss: linear-gradient(180deg, rgba(120,150,215,.04), rgba(120,150,215,0) 45%);
+  --ambient:
+    radial-gradient(900px 560px at 10% -10%, rgba(79,127,217,.13), transparent 62%),
+    radial-gradient(780px 520px at 100% 0%, rgba(110,95,200,.07), transparent 60%);
+}
+
+/* botões: cor sólida, sem brilho, sem sombra de relevo, sem "subir" ao passar o mouse */
+:root .btn {
+  background: var(--accent); background-image: none; box-shadow: none; border-radius: 12px; filter: none;
+  transition: background .2s var(--ease);
+}
+:root .btn:hover { background: var(--accent-hover); transform: none; filter: none; box-shadow: none; }
+:root .btn:active { transform: none; background: var(--accent-hover); }
+:root .btn-pagar { border: 0; }
+:root .btn-pagar:hover { background: var(--green-bg); color: var(--green); filter: brightness(.95); }
+:root .au-btn, :root .cfg-btn { box-shadow: none; background-image: none; }
+:root .au-btn:hover, :root .au-btn:active { transform: none; }
+:root .au-btn:hover { filter: brightness(.92); }
+:root .cfg-btn:active { transform: none; }
+
+/* sem brilhos ao redor de elementos ativos */
+@media (min-width: 769px) {
+  :root .nav-item.active, :root .nav-item.active:hover { background: var(--accent); box-shadow: none; color: #fff; }
+}
+:root .mes-tab.active { background: var(--accent); box-shadow: none; }
+:root .mes-tab { box-shadow: none; }
+:root .cal-day.hoje .cal-day-num { background: var(--accent); box-shadow: none; }
+:root .cal-day:hover { box-shadow: none; transform: none; }
+:root .avatar, :root .profile-btn .avatar { background: color-mix(in srgb, var(--accent) 22%, var(--bg2)); color: var(--text); }
+:root .progress-fill { box-shadow: none; filter: none; }
+:root .tab.active svg { filter: none; }
+:root .metric-card::before { opacity: .45; }
+:root .metric-card:hover, :root .meta-card:hover { transform: none; }
+:root input:focus, :root select:focus, :root textarea:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 24%, transparent); }
+:root .hero h1 { background: none; -webkit-text-fill-color: currentColor; color: var(--text); }

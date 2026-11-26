@@ -1,4 +1,4 @@
-# FinançasPro
+# Vaylence
 
 Site estático (HTML + CSS + JS, sem build) que usa o **Supabase** como banco de dados e login,
 pronto para hospedar na **Vercel**.

@@ -527,7 +527,7 @@ function renderDividas() {
       <span class="mes-tab-sub">${abertasMes ? abertasMes + (abertasMes === 1 ? ' em aberto' : ' em aberto') : '✓ quitado'}</span></button>`;
   }).join('');
   const ativoBtn = tabsEl.querySelector('.mes-tab.active');
-  if (ativoBtn && ativoBtn.scrollIntoView) { try { tabsEl.scrollTo({ left: ativoBtn.offsetLeft - 16, behavior: 'auto' }); } catch (e) {} }
+  if (ativoBtn && ativoBtn.scrollIntoView) { try { tabsEl.scrollTo({ left: Math.max(0, ativoBtn.offsetLeft - tabsEl.offsetLeft - 16), behavior: 'auto' }); } catch (e) {} }
 
   // conteúdo do mês selecionado
   const lista = meses[divMesSel].slice().sort((a, b) => (a.venc || '').localeCompare(b.venc || '') || String(a.desc).localeCompare(String(b.desc)));

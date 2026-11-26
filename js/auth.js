@@ -29,7 +29,7 @@
   }
   function iniciaApp() {
     root.setAttribute('data-view', 'app');
-    document.title = 'FinançasPro — Controle Financeiro';
+    document.title = 'Vaylence — Controle Financeiro';
     if (history.replaceState && location.hash) history.replaceState(null, '', location.pathname + location.search);
     if (appIniciado) return;
     appIniciado = true;
@@ -47,7 +47,7 @@
       var el = document.getElementById('pane-' + p);
       el.hidden = p !== nome;
     });
-    document.title = TITULOS[nome] + ' — FinançasPro';
+    document.title = TITULOS[nome] + ' — Vaylence';
     var pane = document.getElementById('pane-' + nome);
     pane.querySelectorAll('.au-msg').forEach(function (m) { m.textContent = ''; m.className = 'au-msg'; });
     pane.querySelectorAll('input[aria-invalid]').forEach(function (i) { i.removeAttribute('aria-invalid'); });
